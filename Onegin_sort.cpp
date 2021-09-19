@@ -121,3 +121,6 @@ int Comparator1 (FileRead())
          int b;
          a = &b;
          *a == *(&b) **/
+
+
+

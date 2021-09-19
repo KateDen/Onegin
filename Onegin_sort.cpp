@@ -10,16 +10,44 @@
 #include <assert.h>
 #include <errno.h>
 
-int FileRead ();
-int Comparator1 (char *Index);
+int FileRead (int, int, char**);
+int Comparator1 (char**);
 
 int main ()
 {
     /**setlocale (LC_ALL, "Russian");
     qsort (void *getlines, MAXLINES, size_t MAXWORDS, strcmp (*line1, *line2)); **/
 
-    FileRead ();
-    Comparator1 ();
+    FILE *fileread = fopen ("Exampletext.txt", "rb");
+
+    if ((ferror (fileread)) != 0)
+        printf ("File reading error!");
+
+
+    fseek (fileread, 0, SEEK_END);
+
+    long cur_pos = ftell(fileread);
+
+    fseek (fileread, 0, SEEK_SET);
+
+    int MAXLETTERS = cur_pos;
+    int MAXLINES = 0;
+    char symbol = 0;
+
+
+    while ((symbol = fgetc (fileread)) != EOF)
+    {
+        if (symbol == '\n')
+            MAXLINES++;
+    }
+
+    char *Index [MAXLINES];
+
+    fclose (fileread);
+
+
+    FileRead (MAXLETTERS, MAXLINES, Index);
+    Comparator1 (Index);
 
     return 0;
 }
@@ -28,27 +56,9 @@ int main ()
 //-----------------------------------------------------------------------------
 
 
-int FileRead ()
+int FileRead (MAXLETTERS, MAXLINES, Index)
 {
-    FILE *fileread = fopen ("Exampletext.txt", "rb");
-
-    if ((ferror (fileread)) != 0)
-        printf ("File reading error!");
-
-
-    fseek (fileread, 0, SEEK_END);
-    
-    long cur_pos = ftell(fileread);
-
-    assert (cur_pos != 0);
-
-    fseek (fileread, 0, SEEK_SET);
-
-    int MAXLETTERS = cur_pos;
-    
-
     char str [MAXLETTERS + 1];
-    char *Index [100] = {};
     int i = 0;
 
 
@@ -63,7 +73,6 @@ int FileRead ()
 
     int num_lines = i;
 
-    fclose (fileread);
 
 
     for (i = 0; i < num_lines; i++)
@@ -76,16 +85,16 @@ int FileRead ()
 //-----------------------------------------------------------------------------
 
 
-int Comparator1 ()
+int Comparator1 (Index)
 {
     newfile = creat ("Hamlet_sorted.txt", 0);
     if (newfile == -1)
         printf ("File creating error!");
-        
+
     newfile = open ("Hamlet_sorted.txt", O_RDONLY, 0);
     if (newfile == -1)
         printf ("File opening error!");
-    
+
     int length = sizeof (Index) / sizeof (char);
 
     int counter = 1, maxrow = 0, i = 0;

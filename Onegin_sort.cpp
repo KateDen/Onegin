@@ -30,7 +30,7 @@ int main ()
 
 int FileRead ()
 {
-    FILE *fileread = fopen ("Exampletext.txt", "r");
+    FILE *fileread = fopen ("Exampletext.txt", "rb");
 
     if ((ferror (fileread)) != 0)
     {
@@ -61,11 +61,13 @@ int FileRead ()
 
     fclose (fileread);
 
-    for (int i = 0; i < MAXLETTERS; i++)
+    for (i = 0; i < MAXLETTERS + 1; i++)
     {
-        printf ("%c\n", Index [i]);
+        assert (*Index [i] != 0);
+        printf ("%c\n", *Index [i]);
     }
 
+    free (str);
     return 0;
 }
 

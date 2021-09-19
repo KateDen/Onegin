@@ -7,22 +7,24 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-//void qsort (void *getlines, size_t n, size_t MAXLINES, size_t MAXWORD, *comp)
-
 char* FileRead ();
-int Comparator1 ();
+int Comparator1 (char* Index);
 
 int main ()
 
 {
-    /*setlocale (LC_ALL, "Russian");
-    qsort (void *getlines, MAXLINES, size_t MAXWORDS, strcmp (*line1, *line2)); */
+    /**setlocale (LC_ALL, "Russian");
+    qsort (void *getlines, MAXLINES, size_t MAXWORDS, strcmp (*line1, *line2)); **/
 
-   // FileRead ();
-    Comparator1 ();
+    //FileRead ();
+    Comparator1 (FileRead ());
 
     return 0;
 }
+
+
+//-----------------------------------------------------------------------------
+
 
 char* FileRead ()
 {
@@ -53,40 +55,39 @@ char* FileRead ()
     return *Index;
 }
 
-int Comparator1 ()
+
+//-----------------------------------------------------------------------------
+
+
+int Comparator1 (FileRead ())
 {
-    int Index [5] = {3, 8, 1, 2, 9};
-    int length = sizeof (*Index);
-    printf ("%d\n", length);
+    int length = sizeof (Index) / sizeof (char);
 
-    //int counter = 1, maxrow = 0, i = 0;
-    int tmp = 0;
+    int counter = 1, maxrow = 0, i = 0;
+    char tmp = 0;
 
-    for (int k = 0; k <= length - 1; k++)
+    while (counter != 0)
     {
-        //i = k;
+        counter = 0, maxrow = 0;
 
-        /*while (counter != 0)
+        for (int k = 0; k <= length - 1; k++)
         {
-            counter = 0, maxrow = 0;*/
-
-            for (int i = 0; i < (length - i - 1); i++)
+            for (int i = 0; i < (length - k - 1); i++)
             {
                 if (Index [i] > Index [i+1])
                 {
                     tmp = Index [i];
                     Index [i] = Index [i+1];
                     Index [i+1] = tmp;
-               // printf ("%d\n", Index [i]);
 
-                    //counter = 1;
-                    //maxrow++;
+                    counter = 1;
+                    maxrow++;
                 }
             }
-        //}
+        }
     }
 
-    for (int i = 0; i <= length; i++)
+    for (int i = 0; i < length; i++)
     {
         printf ("%d", Index [i]);
     }
@@ -95,8 +96,10 @@ int Comparator1 ()
 }
 
 
+//-----------------------------------------------------------------------------
 
-/*bool comp ()
+
+/**bool comp ()
 {
     char firsts = getchar ();
     int n = 5;
@@ -112,12 +115,12 @@ int Comparator1 ()
 
 
 
-} */
+}
 
-/*         int *a, *b, *c, d;
+        int *a, *b, *c, d;
          int b;
          a = &b;
-         *a == *(&b) */
+         *a == *(&b) **/
 
 
 

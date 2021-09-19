@@ -56,7 +56,7 @@ char* FileRead ()
 int Comparator1 ()
 {
     int Index [5] = {3, 8, 1, 2, 9};
-    int length = (sizeof (*Index) + 1);
+    int length = sizeof (*Index);
     printf ("%d\n", length);
 
     //int counter = 1, maxrow = 0, i = 0;

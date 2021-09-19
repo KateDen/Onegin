@@ -6,8 +6,10 @@
 #include <TXLib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <assert.h>
+#include <errno.h>
 
-char* FileRead ();
+int FileRead ();
 int Comparator1 (char *Index);
 
 int main ()
@@ -17,7 +19,7 @@ int main ()
     qsort (void *getlines, MAXLINES, size_t MAXWORDS, strcmp (*line1, *line2)); **/
 
     FileRead ();
-    Comparator1 (FileRead());
+    //Comparator1 ();
 
     return 0;
 }
@@ -26,40 +28,51 @@ int main ()
 //-----------------------------------------------------------------------------
 
 
-char* FileRead ()
+int FileRead ()
 {
-    FILE *fileread = fopen ("Exampletext.txt", "rb");
+    FILE *fileread = fopen ("Exampletext.txt", "r");
+
+    if ((ferror (fileread)) != 0)
+    {
+        printf ("File reading error!");
+    }
+
+    fseek (fileread, 0, SEEK_END);
+    long cur_pos = ftell(fileread);
+
+    assert (cur_pos != 0);
 
     fseek (fileread, 0, SEEK_SET);
-    long cur_pos = ftell (fileread);
 
-   // enum txtconst {
     int MAXLETTERS = cur_pos;
 
-    char str [MAXLETTERS];
-
-    char *Index [10000000];
+    char str [MAXLETTERS + 2];
+    char *Index [100] = {};
 
     int i = 0;
-    while (i != (MAXLETTERS + 1))
-    {
-        fgets (str, MAXLETTERS + 1, fileread);
 
-        Index [i] = strdup (str);
+    while (fgets (str, MAXLETTERS + 1, fileread) != NULL)
+    {
+        Index[i] = strdup(str);
+
+        assert (Index [i] != 0);
         i++;
     }
 
     fclose (fileread);
 
+    for (int i = 0; i < MAXLETTERS; i++)
+    {
+        printf ("%c\n", Index [i]);
+    }
 
-    return *Index;
+    return 0;
 }
-
 
 //-----------------------------------------------------------------------------
 
 
-int Comparator1 (FileRead())
+/*int Comparator1 ()
 {
     int length = sizeof (Index) / sizeof (char);
 

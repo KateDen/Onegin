@@ -10,7 +10,7 @@
 #include <assert.h>
 #include <errno.h>
 
-int FileRead (int, int, char**);
+int FileReader (int, int, char**, FILE*);
 int Comparator1 (char**);
 
 int main ()
@@ -43,10 +43,10 @@ int main ()
 
     char *Index [MAXLINES];
 
-    fclose (fileread);
+   // fclose (fileread);
 
 
-    FileRead (MAXLETTERS, MAXLINES, Index);
+    FileReader (MAXLETTERS, MAXLINES, Index, fileread);
     Comparator1 (Index);
 
     return 0;
@@ -56,7 +56,7 @@ int main ()
 //-----------------------------------------------------------------------------
 
 
-int FileRead (MAXLETTERS, MAXLINES, Index)
+int FileReader (int MAXLETTERS, int MAXLINES, char **Index, FILE *fileread)
 {
     char str [MAXLETTERS + 1];
     int i = 0;
@@ -64,20 +64,22 @@ int FileRead (MAXLETTERS, MAXLINES, Index)
 
     while (fgets (str, MAXLETTERS + 1, fileread) != NULL)
     {
-        Index[i] = strdup(str);
+        Index [i] = strdup(str);
 
         i++;
         strcpy (str, "Exampletext.txt");
     }
 
 
-    int num_lines = i;
-
-
-
+    /**int num_lines = i;
+    printf ("%c\n", str [45]);
     for (i = 0; i < num_lines; i++)
-        puts (Index[i]);
+    {
+        puts (Index [i]);
 
+        if (puts (Index [i]) == EOF)
+                printf ("puts error!");
+    } **/
 
     return 0;
 }
@@ -85,20 +87,20 @@ int FileRead (MAXLETTERS, MAXLINES, Index)
 //-----------------------------------------------------------------------------
 
 
-int Comparator1 (Index)
+int Comparator1 (char **Index)
 {
-    newfile = creat ("Hamlet_sorted.txt", 0);
-    if (newfile == -1)
-        printf ("File creating error!");
+    char newfile = creat ("Hamlet_sorted.txt", 0);
+    //if (newfile == -1)
+        //printf ("File creating error!");
 
     newfile = open ("Hamlet_sorted.txt", O_RDONLY, 0);
     if (newfile == -1)
         printf ("File opening error!");
 
-    int length = sizeof (Index) / sizeof (char);
+    int length = sizeof (*Index) / sizeof (int);
 
     int counter = 1, maxrow = 0, i = 0;
-    char tmp = 0;
+    char *tmp = 0;
 
     while (counter != 0)
     {
@@ -108,15 +110,18 @@ int Comparator1 (Index)
         {
             for (int i = 0; i < (length - k - 1); i++)
             {
-                if (Index [i] > Index [i+1])
+                if (*Index [i] > *Index [i+1])
                 {
-                    tmp = Index [i];
-                    Index [i] = Index [i+1];
-                    Index [i+1] = tmp;
+                    tmp = *Index [i];
+                    *Index [i] = *Index [i+1];
+                    *Index [i+1] = tmp;
 
                     counter = 1;
                     maxrow++;
                 }
+
+                if (Index [i] == Index [i+1] && *Index [i] != '\n')
+                    i += 1;
             }
         }
     }

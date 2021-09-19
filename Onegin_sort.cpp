@@ -10,8 +10,8 @@
 #include <assert.h>
 #include <errno.h>
 
-int FileReader (int, int, char**, FILE*);
-int Comparator1 (char**);
+int FileReader (int MAXLETTERS, int MAXLINES, char **Index, FILE* fileread);
+int Comparator1 (char **Index, int MAXLINES);
 
 int main ()
 {
@@ -47,7 +47,7 @@ int main ()
 
 
     FileReader (MAXLETTERS, MAXLINES, Index, fileread);
-    Comparator1 (Index);
+    Comparator1 (Index, MAXLINES);
 
     return 0;
 }
@@ -87,7 +87,7 @@ int FileReader (int MAXLETTERS, int MAXLINES, char **Index, FILE *fileread)
 //-----------------------------------------------------------------------------
 
 
-int Comparator1 (char **Index)
+int Comparator1 (char **Index, int MAXLINES)
 {
     char newfile = creat ("Hamlet_sorted.txt", 0);
     //if (newfile == -1)
@@ -97,7 +97,9 @@ int Comparator1 (char **Index)
     if (newfile == -1)
         printf ("File opening error!");
 
-    int length = sizeof (*Index) / sizeof (int);
+
+
+    //int length = sizeof (*Index) / sizeof (int);
 
     int counter = 1, maxrow = 0, i = 0;
     char *tmp = 0;
@@ -106,29 +108,33 @@ int Comparator1 (char **Index)
     {
         counter = 0, maxrow = 0;
 
-        for (int k = 0; k <= length - 1; k++)
+        for (int k = 0; k <= MAXLINES - 1; k++)
         {
-            for (int i = 0; i < (length - k - 1); i++)
+            for (int i = 0; i < (MAXLINES - k - 1); i++)
             {
-                if (*Index [i] > *Index [i+1])
+                int str_comp_res = strcpy (Index [i], Index [i+1]);  //stopped here                             -----------
+
+                if (str_comp_res > 0)
                 {
-                    tmp = *Index [i];
-                    *Index [i] = *Index [i+1];
-                    *Index [i+1] = tmp;
+                    tmp = Index [i];
+                    Index [i] = Index [i+1];
+                    Index [i+1] = tmp;
 
                     counter = 1;
                     maxrow++;
                 }
 
-                if (Index [i] == Index [i+1] && *Index [i] != '\n')
+                if (str_comp_res == 0)
                     i += 1;
             }
         }
     }
 
-    for (int i = 0; i < length; i++)
+    FILE *filewrite = fopen ("Hamlet_sorted.txt", "a");
+
+    for (i = 0; i < MAXLINES; i++)
     {
-        printf ("%d", Index [i]);
+        puts (Index [i]);
     }
 
     return 0;

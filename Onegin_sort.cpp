@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 
 char* FileRead ();
-int Comparator1 (char* Index);
+int Comparator1 (char *Index);
 
 int main ()
 
@@ -16,8 +16,8 @@ int main ()
     /**setlocale (LC_ALL, "Russian");
     qsort (void *getlines, MAXLINES, size_t MAXWORDS, strcmp (*line1, *line2)); **/
 
-    //FileRead ();
-    Comparator1 (FileRead ());
+    FileRead ();
+    Comparator1 (FileRead());
 
     return 0;
 }
@@ -30,7 +30,7 @@ char* FileRead ()
 {
     FILE *fileread = fopen ("Exampletext.txt", "rb");
 
-    fseek (fileread, 0, SEEK_END);
+    fseek (fileread, 0, SEEK_SET);
     long cur_pos = ftell (fileread);
 
    // enum txtconst {
@@ -59,7 +59,7 @@ char* FileRead ()
 //-----------------------------------------------------------------------------
 
 
-int Comparator1 (FileRead ())
+int Comparator1 (FileRead())
 {
     int length = sizeof (Index) / sizeof (char);
 
@@ -121,6 +121,3 @@ int Comparator1 (FileRead ())
          int b;
          a = &b;
          *a == *(&b) **/
-
-
-

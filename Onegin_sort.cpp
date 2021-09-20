@@ -47,7 +47,7 @@ int main ()
 
 
     FileReader (MAXLETTERS, MAXLINES, Index, fileread);
-    Comparator1 (Index, MAXLINES);
+    //Comparator1 (Index, MAXLINES);
 
     return 0;
 }
@@ -71,7 +71,7 @@ int FileReader (int MAXLETTERS, int MAXLINES, char **Index, FILE *fileread)
     }
 
 
-    /**int num_lines = i;
+    int num_lines = i;
     printf ("%c\n", str [45]);
     for (i = 0; i < num_lines; i++)
     {
@@ -79,7 +79,7 @@ int FileReader (int MAXLETTERS, int MAXLINES, char **Index, FILE *fileread)
 
         if (puts (Index [i]) == EOF)
                 printf ("puts error!");
-    } **/
+    }
 
     return 0;
 }
@@ -112,7 +112,7 @@ int Comparator1 (char **Index, int MAXLINES)
         {
             for (int i = 0; i < (MAXLINES - k - 1); i++)
             {
-                int str_comp_res = strcpy (Index [i], Index [i+1]);  //stopped here                             -----------
+                int str_comp_res = strcmp (Index [i], Index [i+1]);
 
                 if (str_comp_res > 0)
                 {
@@ -123,19 +123,16 @@ int Comparator1 (char **Index, int MAXLINES)
                     counter = 1;
                     maxrow++;
                 }
-
-                if (str_comp_res == 0)
-                    i += 1;
             }
         }
     }
 
-    FILE *filewrite = fopen ("Hamlet_sorted.txt", "a");
+    /*FILE *filewrite = fopen ("Hamlet_sorted.txt", "a");
 
     for (i = 0; i < MAXLINES; i++)
     {
         puts (Index [i]);
-    }
+    }   */
 
     return 0;
 }

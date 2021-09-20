@@ -41,6 +41,11 @@ int main ()
             MAXLINES++;
     }
 
+    fseek (fileread, 0, SEEK_SET);
+
+    cur_pos = ftell(fileread);
+
+
     char *Index [MAXLINES];
 
    // fclose (fileread);
@@ -72,7 +77,7 @@ int FileReader (int MAXLETTERS, int MAXLINES, char **Index, FILE *fileread)
 
 
     int num_lines = i;
-    printf ("%c\n", str [45]);
+    //printf ("%c\n", str [45]);
     for (i = 0; i < num_lines; i++)
     {
         puts (Index [i]);

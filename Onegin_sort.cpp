@@ -30,7 +30,7 @@ int main ()
 
     fseek (fileread, 0, SEEK_SET);
 
-    int MAXLETTERS = cur_pos;
+    const int MAXLETTERS = cur_pos;
     int MAXLINES = 0;
     char symbol = 0;
 
@@ -48,11 +48,11 @@ int main ()
 
     char *Index [MAXLINES];
 
-   // fclose (fileread);
-
-
     FileReader (MAXLETTERS, MAXLINES, Index, fileread);
     Comparator1 (Index, MAXLINES);
+
+    fclose (fileread);
+
 
     return 0;
 }
@@ -123,19 +123,16 @@ int Comparator1 (char **Index, int MAXLINES)
     }
 
     for (i = 0; i < MAXLINES; i++)
-    {
         puts (Index [i]);
 
-        if (puts (Index [i]) == EOF)
-                printf ("puts error!");
-    }
-
-    /*FILE *filewrite = fopen ("Hamlet_sorted.txt", "a");
+    FILE *filewrite = fopen ("Hamlet_sorted.txt", "a");
 
     for (i = 0; i < MAXLINES; i++)
     {
         fputs (Index [i], filewrite);
-    }  */
+    }
+
+    fclose (filewrite);
 
     return 0;
 }

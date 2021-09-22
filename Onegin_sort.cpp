@@ -10,8 +10,9 @@
 #include <assert.h>
 #include <errno.h>
 
-int FileReader (int MAXLETTERS, int MAXLINES, char **Index, FILE* fileread);
-int Comparator1 (char **Index, int MAXLINES);
+int FileReader (const unsigned int MAXLETTERS, char **Index, FILE* fileread);
+int Comparator1 (char **Index, unsigned MAXLINES);
+FILE *FileWriter (unsigned MAXLINES, char **Index);
 
 int main ()
 {
@@ -30,9 +31,9 @@ int main ()
 
     fseek (fileread, 0, SEEK_SET);
 
-    const int MAXLETTERS = cur_pos;
-    int MAXLINES = 0;
-    char symbol = 0;
+    const unsigned int MAXLETTERS = cur_pos;
+    unsigned MAXLINES = 0;
+    int symbol = 0;
 
 
     while ((symbol = fgetc (fileread)) != EOF)
@@ -48,8 +49,9 @@ int main ()
 
     char *Index [MAXLINES];
 
-    FileReader (MAXLETTERS, MAXLINES, Index, fileread);
+    FileReader (MAXLETTERS, Index, fileread);
     Comparator1 (Index, MAXLINES);
+    FileWriter (MAXLINES, Index);
 
     fclose (fileread);
 
@@ -61,7 +63,7 @@ int main ()
 //-----------------------------------------------------------------------------
 
 
-int FileReader (int MAXLETTERS, int MAXLINES, char **Index, FILE *fileread)
+int FileReader (const unsigned int MAXLETTERS, char **Index, FILE *fileread)
 {
     char str [MAXLETTERS + 1];
     int i = 0;
@@ -92,20 +94,20 @@ int FileReader (int MAXLETTERS, int MAXLINES, char **Index, FILE *fileread)
 //-----------------------------------------------------------------------------
 
 
-int Comparator1 (char **Index, int MAXLINES)
+int Comparator1 (char **Index, unsigned MAXLINES)
 {
     //int length = sizeof (*Index) / sizeof (int);
 
-    int counter = 1, maxrow = 0, i = 0;
+    unsigned counter = 1, maxrow = 0, i = 0;
     char *tmp = 0;
 
     while (counter != 0)
     {
         counter = 0, maxrow = 0;
 
-        for (int k = 0; k <= MAXLINES - 1; k++)
+        for (unsigned k = 0; k <= MAXLINES - 1; k++)
         {
-            for (int i = 0; i < (MAXLINES - k - 1); i++)
+            for (i = 0; i < (MAXLINES - k - 1); i++)
             {
                 int str_comp_res = strcmp (Index [i], Index [i+1]);
 
@@ -125,17 +127,25 @@ int Comparator1 (char **Index, int MAXLINES)
     for (i = 0; i < MAXLINES; i++)
         puts (Index [i]);
 
+
+
+    return 0;
+}
+
+FILE *FileWriter (unsigned MAXLINES, char **Index)
+{
     FILE *filewrite = fopen ("Hamlet_sorted.txt", "a");
 
-    for (i = 0; i < MAXLINES; i++)
+    for (unsigned i = 0; i < MAXLINES; i++)
     {
         fputs (Index [i], filewrite);
     }
 
     fclose (filewrite);
 
-    return 0;
+    return filewrite;
 }
+
 
 
 //-----------------------------------------------------------------------------

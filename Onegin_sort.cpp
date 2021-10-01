@@ -22,7 +22,7 @@
 #include <errno.h>
 
 int FileBufferize (struct text *txtStructPtr);
-int IndexFiller (int MAXLETTERS, char **Index, char *buffer);
+int IndexFiller (char **Index, char *buffer);      //initstrings
 int Sort1 (char **Index, int MAXLINES);
 int ErrorPtints (void);                                           //merge sort - сортировка слиянием
                                                                   //лучше самостоятельно написать сортировку,
@@ -59,9 +59,11 @@ int n = 0;
 int main ()
 {
     /**setlocale (LC_ALL, "Russian");
-    qsort (void *getlines, MAXLINES, size_t MAXWORDS, strcmp (*line1, *line2)); **/
-
-    struct text *txtStructPtr = (struct text*) calloc (3, sizeof (struct text));
+    qsort (void *getlines, MAXLINES, size_t MAXWORDS, strcmp (*line1, *line2)); */
+    struct text Text;
+    struct text *txtStructPtr = &Text;
+    //int a;
+    //int* a = (int*) calloc(1, sizeof(int));
 
     n = FileBufferize (txtStructPtr);
 
@@ -69,7 +71,7 @@ int main ()
 
     char *Index [txtStructPtr -> MAXLINES];
 
-    IndexFiller (txtStructPtr -> MAXLETTERS, Index, txtStructPtr -> buffer);
+    IndexFiller (Index, txtStructPtr -> buffer);
 
     Sort1 (Index, txtStructPtr -> MAXLINES);
 

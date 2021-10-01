@@ -61,8 +61,7 @@ int main ()
     /**setlocale (LC_ALL, "Russian");
     qsort (void *getlines, MAXLINES, size_t MAXWORDS, strcmp (*line1, *line2)); **/
 
-    struct text *txtStructPtr;
-
+    struct text *txtStructPtr = (struct text*) calloc (3, sizeof (struct text));
 
     n = FileBufferize (txtStructPtr);
 

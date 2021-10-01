@@ -13,7 +13,7 @@ int FileBufferize (struct text *txtStructPtr)
 {
     int size_of_element = sizeof (char);
 
-    FILE *fileread = fopen ("Exampletext.txt", "r");
+    FILE *fileread = fopen ("Exampletext.txt", "rb");
 
     if (fileread == NULL)
     {
@@ -28,16 +28,28 @@ int FileBufferize (struct text *txtStructPtr)
 
     fseek (fileread, 0, SEEK_END);
     txtStructPtr -> MAXLETTERS = ftell(fileread);
-    fseek (fileread, 0, SEEK_SET);                                        /// специальная функция для освобождения памяти!
+    fseek (fileread, 0, SEEK_SET);
+    /*struct String {
+    char* data;
+    int len;
+    }
+    struct String string;
+    string.data = NULL;
+
+    struct String* pointer_to_string = &string;
+
+    (*pointer_to_string).data    */
+                                                /// специальная функция для освобождения памяти!
+
 
 
     txtStructPtr -> buffer = (char *) calloc ((txtStructPtr -> MAXLETTERS + 1), size_of_element);
 
-    (*(txtStructPtr + (txtStructPtr -> MAXLETTERS) + 1)).buffer = '\0';
+    *(txtStructPtr -> buffer + txtStructPtr -> MAXLETTERS + 1) = '\0';
 
 
-    if((fread (txtStructPtr -> buffer, size_of_element, ((txtStructPtr -> MAXLETTERS) + 1), fileread))
-    == ((txtStructPtr -> MAXLETTERS) + 1))
+    if((fread (txtStructPtr -> buffer, size_of_element, (txtStructPtr -> MAXLETTERS + 1), fileread))
+    != (txtStructPtr -> MAXLETTERS + 1))
     {                                                             //mistake is here
         return FREAD_ERR;
     }                                                             /// сделать разрушающий диструктор для текста
@@ -51,11 +63,11 @@ int FileBufferize (struct text *txtStructPtr)
     char symbol = 0;
 
 
-    while (*((txtStructPtr->buffer) + symbol) != '\0')
+    while (*(txtStructPtr->buffer + symbol) != '\0')        //strchr  strtok
     {
-        if (*(txtStructPtr -> buffer) == '\n')
+        if (*(txtStructPtr -> buffer + symbol) == '\n')
         {
-            (txtStructPtr -> buffer) = '\0';
+            *(txtStructPtr -> buffer + symbol) = '\0';
             counter++;
             symbol++;
         }
@@ -84,7 +96,7 @@ int FileBufferize (struct text *txtStructPtr)
 }
 
 
-int IndexFiller (int MAXLETTERS, char **Index, char *buffer)
+int IndexFiller (char **Index, char *buffer)
 {
     assert (Index);
 

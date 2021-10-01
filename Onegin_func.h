@@ -15,32 +15,32 @@ int FileBufferize (struct text *txtStructPtr)
 
     FILE *fileread = fopen ("Exampletext.txt", "r");
 
-    if ((ferror (fileread)) == 0)
+    if (fileread == NULL)
     {
         return FOPEN_ERR;
     }
 
-    if (feof (fileread) == 0)
+    /*if (feof (fileread) == 0)
     {
         return EOF_READ_ERR;
-    }
+    }  */
 
 
     fseek (fileread, 0, SEEK_END);
     txtStructPtr -> MAXLETTERS = ftell(fileread);
-    fseek (fileread, 0, SEEK_SET);                                        /// ñïåöèàëüíàÿ ôóíêöèÿ äëÿ îñâîáîæäåíèÿ ïàìÿòè!
+    fseek (fileread, 0, SEEK_SET);                                        /// ÑÐ¿ÐµÑ†Ð¸Ð°Ð»ÑŒÐ½Ð°Ñ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ñ Ð´Ð»Ñ Ð¾ÑÐ²Ð¾Ð±Ð¾Ð¶Ð´ÐµÐ½Ð¸Ñ Ð¿Ð°Ð¼ÑÑ‚Ð¸!
 
 
-    txtStructPtr -> buffer = (char *) calloc (((txtStructPtr -> MAXLETTERS) + 1), size_of_element);
+    txtStructPtr -> buffer = (char *) calloc ((txtStructPtr -> MAXLETTERS + 1), size_of_element);
 
-    *((txtStructPtr -> buffer) + (txtStructPtr -> MAXLETTERS) + 1) = '\0';
+    (*(txtStructPtr + (txtStructPtr -> MAXLETTERS) + 1)).buffer = '\0';
 
 
     if((fread (txtStructPtr -> buffer, size_of_element, ((txtStructPtr -> MAXLETTERS) + 1), fileread))
     == ((txtStructPtr -> MAXLETTERS) + 1))
     {                                                             //mistake is here
         return FREAD_ERR;
-    }                                                             /// ñäåëàòü ðàçðóøàþùèé äèñòðóêòîð äëÿ òåêñòà
+    }                                                             /// ÑÐ´ÐµÐ»Ð°Ñ‚ÑŒ Ñ€Ð°Ð·Ñ€ÑƒÑˆÐ°ÑŽÑ‰Ð¸Ð¹ Ð´Ð¸ÑÑ‚Ñ€ÑƒÐºÑ‚Ð¾Ñ€ Ð´Ð»Ñ Ñ‚ÐµÐºÑÑ‚Ð°
 
 /**/else printf ("Fread is OK!\n");
 
@@ -51,11 +51,11 @@ int FileBufferize (struct text *txtStructPtr)
     char symbol = 0;
 
 
-    while (*(txtStructPtr -> buffer + symbol) != '\0')
+    while (*((txtStructPtr->buffer) + symbol) != '\0')
     {
         if (*(txtStructPtr -> buffer) == '\n')
         {
-            *(txtStructPtr -> buffer) = '\0';
+            (txtStructPtr -> buffer) = '\0';
             counter++;
             symbol++;
         }

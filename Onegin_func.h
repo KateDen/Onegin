@@ -13,7 +13,7 @@ int FileBufferize (struct text *txtStructPtr)
 {
     int size_of_element = sizeof (char);
 
-    FILE *fileread = fopen ("Exampletext.txt", "rb");
+    FILE *fileread = fopen ("Hamlet_example.txt", "rb");
 
     if (fileread == NULL)
     {
@@ -26,42 +26,33 @@ int FileBufferize (struct text *txtStructPtr)
     }  */
 
 
-    fseek (fileread, 0, SEEK_END);
-    txtStructPtr -> MAXLETTERS = ftell(fileread);
-    fseek (fileread, 0, SEEK_SET);
-    /*struct String {
-    char* data;
-    int len;
+    if ((fseek (fileread, 0, SEEK_END)) != 0)
+    {
+        return FSEEK_ERR;
     }
-    struct String string;
-    string.data = NULL;
 
-    struct String* pointer_to_string = &string;
-
-    (*pointer_to_string).data    */
-                                                /// специальная функция для освобождения памяти!
-
+    txtStructPtr -> MAXLETTERS = ftell(fileread);
+    fseek (fileread, 0, SEEK_SET);                                                /// специальная функция для освобождения памяти!
 
 
     txtStructPtr -> buffer = (char *) calloc ((txtStructPtr -> MAXLETTERS + 1), size_of_element);
 
     *(txtStructPtr -> buffer + txtStructPtr -> MAXLETTERS) = '\0';
 
+    int readsymb = fread (txtStructPtr -> buffer, size_of_element, (txtStructPtr -> MAXLETTERS + 1), fileread);
 
-    if((fread (txtStructPtr -> buffer, size_of_element, (txtStructPtr -> MAXLETTERS + 1), fileread))
-    != (txtStructPtr -> MAXLETTERS + 1))
-    {                                                             //mistake is here
+    if (readsymb != (txtStructPtr -> MAXLETTERS))
+    {
         return FREAD_ERR;
-    }                                                             /// сделать разрушающий диструктор для текста
-
-/**/else printf ("Fread is OK!\n");
+    }                                                             /// сделать разрушающий диструктор для текст
 
 
     //fread (txtStructPtr-> buffer, size_of_element, ((txtStructPtr -> MAXLETTERS) + 1), fileread);
 
-    int counter = 0;
+    int counter = 0, i = 0;
     char symbol = 0;
 
+    //char *Index [100000];
 
     while (*(txtStructPtr -> buffer + symbol) != '\0')        //strchr  strtok
     {
@@ -79,8 +70,6 @@ int FileBufferize (struct text *txtStructPtr)
 
     txtStructPtr -> MAXLINES = (counter + 1);
 
-/**/printf ("counter + 1 = %d\n", txtStructPtr -> MAXLINES);
-
     if ((fseek (fileread, 0, SEEK_SET)) != 0)
     {
         return FSEEK_ERR;
@@ -96,30 +85,34 @@ int FileBufferize (struct text *txtStructPtr)
 }
 
 
-int IndexFiller (char **Index, char *buffer)
+//-----------------------------------------------------------------------------
+
+
+int InitStrings (char **Index, char *buffer, int MAXLINES)
 {
     assert (Index);
 
+    printf ("Initstrings started.\n");
 
     int i = 0;
 
 
-    while (gets (buffer) != NULL)
+    while (i <= MAXLINES)
     {
-        Index [i] = strdup(buffer);
+        gets (buffer);
+        Index [i] = strchr (buffer + i, '\0') + 1;
         i++;
-        strcpy (buffer, "Exampletext.txt");
     }
 
-    /*int num_lines = i;
-    //printf ("%c\n", str [45]);
+    int num_lines = i;
+
     for (i = 0; i < num_lines; i++)
     {
         puts (Index [i]);
 
         if (puts (Index [i]) == EOF)
-                printf ("puts error!");
-    }    */
+                printf ("puts error!\n");
+    }
 
     return 0;
 }

@@ -24,7 +24,7 @@
 int FileBufferize (struct text *txtStructPtr);
 int IndexFiller (char **Index, char *buffer);      //initstrings
 int Sort1 (char **Index, int MAXLINES);
-int ErrorPtints (void);                                           //merge sort - сортировка слиянием
+int ErrorPrints (void);                                           //merge sort - сортировка слиянием
                                                                   //лучше самостоятельно написать сортировку,
                                                                   //потом работать над скоростью и другими сортировками
                                                                   // - так и говорить менторам
@@ -67,7 +67,7 @@ int main ()
 
     n = FileBufferize (txtStructPtr);
 
-    ErrorPtints ();
+    ErrorPrints ();
 
     char *Index [txtStructPtr -> MAXLINES];
 
@@ -87,7 +87,7 @@ int main ()
 //-----------------------------------------------------------------------------
 
 
-int ErrorPtints (void)
+int ErrorPrints (void)
 {
     switch (n)
     {

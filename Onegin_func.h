@@ -45,7 +45,7 @@ int FileBufferize (struct text *txtStructPtr)
 
     txtStructPtr -> buffer = (char *) calloc ((txtStructPtr -> MAXLETTERS + 1), size_of_element);
 
-    *(txtStructPtr -> buffer + txtStructPtr -> MAXLETTERS + 1) = '\0';
+    *(txtStructPtr -> buffer + txtStructPtr -> MAXLETTERS) = '\0';
 
 
     if((fread (txtStructPtr -> buffer, size_of_element, (txtStructPtr -> MAXLETTERS + 1), fileread))
@@ -63,7 +63,7 @@ int FileBufferize (struct text *txtStructPtr)
     char symbol = 0;
 
 
-    while (*(txtStructPtr->buffer + symbol) != '\0')        //strchr  strtok
+    while (*(txtStructPtr -> buffer + symbol) != '\0')        //strchr  strtok
     {
         if (*(txtStructPtr -> buffer + symbol) == '\n')
         {
@@ -79,7 +79,7 @@ int FileBufferize (struct text *txtStructPtr)
 
     txtStructPtr -> MAXLINES = (counter + 1);
 
-    printf ("counter + 1 = %d\n", txtStructPtr -> MAXLINES);
+/**/printf ("counter + 1 = %d\n", txtStructPtr -> MAXLINES);
 
     if ((fseek (fileread, 0, SEEK_SET)) != 0)
     {

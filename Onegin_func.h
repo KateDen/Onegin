@@ -66,7 +66,7 @@ int FileBufferize (struct text *txtStructPtr)
         else symbol++;
     }
 
-    printf ("counter = %d\n", counter);
+    //printf ("counter = %d\n", counter);
 
 
     txtStructPtr -> MAXLINES = (counter + 1);
@@ -88,42 +88,45 @@ int FileBufferize (struct text *txtStructPtr)
 
 //-----------------------------------------------------------------------------
 
-
-int InitStrings (char **Index, char *buffer, int MAXLINES)
+int InitStrings (char **Index, struct text *text)
 {
-    assert (Index);
 
-    printf ("Initstrings started.\n");
+    //printf ("Initstrings started.\n");
+    assert (Index != NULL);
 
+    int q = 1;
     int i = 0;
-    char symbol = 0;
+
+    char *ch = text->buffer;
+    assert (ch != NULL);
 
 
-    while (i <= MAXLINES)
+    //return 0;
+    Index[0] = ch;
+    //puts (Index[0]);
+
+    while (1)
     {
-        symbol = *buffer;
 
-        if (symbol == '\0')
+        if (*(ch + i) == '\0')
         {
-            Index [i] = buffer + i + 1;
-            i++;
+            if (i < text->MAXLETTERS)
+            {
 
+                ++i;
+                Index[q] = (ch + i);
+                ++q;
+            }
+            else
+                break;
         }
-
-        /*gets (buffer);
-        Index [i] = strchr (buffer + i, '\0') + 1;
-        i++;*/
+        ++i;
     }
 
-    int num_lines = i;
-
-    for (i = 0; i < num_lines; i++)
+    /*for (i = 0; i < text->MAXLINES; i++)
     {
         puts (Index [i]);
-
-        if (puts (Index [i]) == EOF)
-                printf ("puts error!\n");
-    }
+    } */
 
     return 0;
 }
@@ -135,6 +138,7 @@ int InitStrings (char **Index, char *buffer, int MAXLINES)
 int Sort1 (char **Index, int MAXLINES)
 {
     //int length = sizeof (*Index) / sizeof (int);
+
 
     unsigned counter = 1, maxrow = 0, i = 0;
     char *tmp = 0;

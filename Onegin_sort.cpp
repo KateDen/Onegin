@@ -22,7 +22,7 @@
 #include <errno.h>
 
 int FileBufferize (struct text *txtStructPtr, char **);
-int InitStrings (char **Index, char *buffer, int MAXLINES);      //initstrings
+int InitStrings (char **Index, struct text *txtStructPtr);      //initstrings
 int Sort1 (char **Index, int MAXLINES);
 int ErrorPrints (void);                                           //merge sort - сортировка слиянием
                                                                   //лучше самостоятельно написать сортировку,
@@ -71,7 +71,7 @@ int main ()
 
     char *Index [txtStructPtr -> MAXLINES];
 
-    InitStrings (Index, txtStructPtr -> buffer, txtStructPtr -> MAXLINES);
+    InitStrings (Index, txtStructPtr);
 
     Sort1 (Index, txtStructPtr -> MAXLINES);
 

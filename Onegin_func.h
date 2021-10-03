@@ -49,7 +49,7 @@ int FileBufferize (struct text *txtStructPtr)
 
     //fread (txtStructPtr-> buffer, size_of_element, ((txtStructPtr -> MAXLETTERS) + 1), fileread);
 
-    int counter = 0, i = 0;
+    int counter = 0;
     char symbol = 0;
 
     //char *Index [100000];
@@ -62,6 +62,7 @@ int FileBufferize (struct text *txtStructPtr)
             counter++;
             symbol++;
         }
+
         else symbol++;
     }
 
@@ -95,13 +96,23 @@ int InitStrings (char **Index, char *buffer, int MAXLINES)
     printf ("Initstrings started.\n");
 
     int i = 0;
+    char symbol = 0;
 
 
     while (i <= MAXLINES)
     {
-        gets (buffer);
+        symbol = *buffer;
+
+        if (symbol == '\0')
+        {
+            Index [i] = buffer + i + 1;
+            i++;
+
+        }
+
+        /*gets (buffer);
         Index [i] = strchr (buffer + i, '\0') + 1;
-        i++;
+        i++;*/
     }
 
     int num_lines = i;
@@ -116,6 +127,7 @@ int InitStrings (char **Index, char *buffer, int MAXLINES)
 
     return 0;
 }
+
 
 //-----------------------------------------------------------------------------
 
@@ -156,6 +168,10 @@ int Sort1 (char **Index, int MAXLINES)
 
     return 0;
 }
+
+
+//-----------------------------------------------------------------------------
+
 
 FILE *FileWriter (int MAXLINES, char **Index)
 {

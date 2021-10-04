@@ -4,53 +4,34 @@
 #include <ctype.h>
 #include <locale.h>                                         ///!!!!!!! buffer was declared as array => memory error!!!
 #include <TXLib.h>
-                                                   /*
-                                                   github desktop + файл .gitignore где прописано,
-                                                   что игнорить при сохранении на гитхаб - более профессионально
-                                                   и требует commit summary
-                                                   *.layout  - расположение окон кодблокса
-                                                   *.bmarks - закладки в больших проектах
-                                                   fprintf str err - писать в поток для вывода ошибок
-                                                   (сообщение об ошибке + подсказки, как пользоваться программой)
-                                                   специальная опция /? или (--h --help - linux) - написать как пользоваться
-                                                   и выйти из программы - новый код ошибки для запроса помощи REQUEST_HELP
-                                                   rewind (только для потока-файла) - установка позиции файла в 0 быстро!
-                                                   */
-
 #include <sys/types.h>
 #include <assert.h>
 #include <errno.h>
 
-int FileBufferize (struct text *txtStructPtr, char **);
-int InitStrings (char **Index, struct text *txtStructPtr);      //initstrings
-int Sort1 (char **Index, int MAXLINES);
-int ErrorPrints (void);                                           //merge sort - сортировка слиянием
-                                                                  //лучше самостоятельно написать сортировку,
-                                                                  //потом работать над скоростью и другими сортировками
-                                                                  // - так и говорить менторам
-FILE *FileWriter (int MAXLINES, char **Index);
-
 enum error_consts {
-    FOPEN_ERR = 1,
-    EOF_READ_ERR,
-    FREAD_ERR,
-    FSEEK_ERR,
-    FCLOSE_ERR,
-
-    BUFFERR
+    FOPEN_ERR    = 1,
+    EOF_READ_ERR = 2,
+    FREAD_ERR    = 3,
+    FSEEK_ERR    = 4,
+    FCLOSE_ERR   = 5,
+    SWAP_ERR     = 6
 };
 
 
-struct text
+struct Text
 {
-    char *buffer;                                              /// написать функции для работы со структурой
-                                                               /// для чтения структуры и для разрушения структуры
-    int MAXLINES;                                              /// код быквы ё 241
-    int MAXLETTERS;                                            /// функции как заменять \n на \0
+    char *buffer;
+    int filesize;
+
+    int numlines;
+    struct Line* lines;
 };
 
-int n = 0;
-
+struct Line
+{
+    char *str;
+    int length;
+};
 
 #include "Onegin_func.h"
 #include "Onegin_errors.h"
@@ -59,26 +40,33 @@ int n = 0;
 int main ()
 {
     /**setlocale (LC_ALL, "Russian");
-    qsort (void *getlines, MAXLINES, size_t MAXWORDS, strcmp (*line1, *line2)); */
-    struct text Text;
-    struct text *txtStructPtr = &Text;
-    //int a;
-    //int* a = (int*) calloc(1, sizeof(int));
+    qsort (void *getlines, numlines, size_t MAXWORDS, strcmp (*line1, *line2)); */
 
-    n = FileBufferize (txtStructPtr);
+    struct Text text = {};
 
-    ErrorPrints ();
+    FILE *fileread = fopen ("Hamlet_example.txt", "rb");
 
-    char *Index [txtStructPtr -> MAXLINES];
+    if (!fileread)
+    {
+        return FOPEN_ERR;
+    }
 
-    InitStrings (Index, txtStructPtr);
+    Text_Ctor(fileread);
 
-    Sort1 (Index, txtStructPtr -> MAXLINES);
+    Sort1 (Index, text.numlines);
 
-    FileWriter (txtStructPtr -> MAXLINES, Index);
+    FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
 
-    //qsort ();
+    if (!filewrite)
+    {
+        return FOPEN_ERR;
+    }
 
+    FileWriter (text.numlines, Index);
+
+    Text_Dtor(fileread);
+
+    ErrorPrints();
 
     return 0;
 }
@@ -89,28 +77,36 @@ int main ()
 
 int ErrorPrints (void)
 {
-    switch (n)
+    if (!errno) return 0;
+
+    switch (errno)
     {
         case FOPEN_ERR:
-            printf ("File opening error!\n");
+            fprintf (stderr, "File opening error!\n");
             break;
 
         case EOF_READ_ERR:
-            printf ("EOF error!\n");
+            fprintf (stderr, "EOF error!\n");
             break;
 
         case FREAD_ERR:
-            printf ("Fread error!\n");
+            fprintf (stderr, "Fread error!\n");
             break;
 
         case FSEEK_ERR:
-            printf ("File seek error!\n");
+            fprintf (stderr, "File seek error!\n");
             break;
 
         case FCLOSE_ERR:
-            printf ("File close error!\n");
+            fprintf (stderr, "File close error!\n");
             break;
 
-        default: return 0;
+        case SWAP_ERR:
+            fprintf (stderr, "Swap error!\n");
+            break;
+
+        default:
+            // perror();
     }
 }
+

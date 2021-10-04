@@ -2,71 +2,61 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <locale.h>                                        
+#include <locale.h>
 #include <TXLib.h>
-#include <sys/types.h>
 #include <assert.h>
 #include <errno.h>
 
-enum error_consts {
-    FOPEN_ERR    = 1,
-    EOF_READ_ERR = 2,
-    FREAD_ERR    = 3,
-    FSEEK_ERR    = 4,
-    FCLOSE_ERR   = 5,
-    SWAP_ERR     = 6
-};
+#include "Onegin_errors.cpp"
 
 
-struct Text
+//-----------------------------------------------------------------------------
+
+
+int Text_Ctor(FILE *fileread, struct Text *text)
 {
-    char *buffer;
-    int filesize;
+    text->filesize = FileBufferize (fileread);
 
-    int numlines;
-    struct Line* lines;
-};
+    text->lines = (struct Index*) calloc (text.num_lines, sizeof(Line));
 
-struct Line
+    char* begin_str = text->lines[i].str;
+    InitStrings (&text);
+}
+
+int Text_Dtor(fileread)
 {
-    char *str;
-    int length;
-};
+    free(text->lines);
+    free(text->buffer);
+    text->lines = nullptr;
+    text->buffer = nullptr;
+    return 0;
+}
 
-#include "Onegin_func.h"
-#include "Onegin_errors.h"
+
+//-----------------------------------------------------------------------------
 
 
-int main ()
+int FileBufferize (struct Text *text, FILE *fileread)
 {
-    /**setlocale (LC_ALL, "Russian");
-    qsort (void *getlines, numlines, size_t MAXWORDS, strcmp (*line1, *line2)); */
+    int size_of_element = sizeof (char);
 
-    struct Text text = {};
 
-    FILE *fileread = fopen ("Hamlet_example.txt", "rb");
-
-    if (!fileread)
+    if (fileread == NULL)
     {
         return FOPEN_ERR;
     }
 
-    Text_Ctor(fileread);
-
-    Sort1 (Index, text.numlines);
-
-    FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
-
-    if (!filewrite)
+    if ((fseek (fileread, 0, SEEK_END)) != 0)
     {
-        return FOPEN_ERR;
+        return FSEEK_ERR;
     }
 
-    FileWriter (text.numlines, Index);
+    text -> filesize = ftell (fileread);
 
-    Text_Dtor(fileread);
-
-    ErrorPrints();
+    if ((fseek (fileread, 0, SEEK_SET)) != 0)
+    {
+        return FSEEK_ERR;
+    }
 
     return 0;
 }
@@ -75,38 +65,191 @@ int main ()
 //-----------------------------------------------------------------------------
 
 
-int ErrorPrints (void)
+int Bufferizer (struct Text *text)
 {
-    if (!errno) return 0;
+    text -> buffer = (char *) calloc ((text -> filesize + 1), size_of_element);
 
-    switch (errno)
+    int readsymb = fread (text -> buffer, size_of_element, (text -> filesize + 1), fileread);
+
+    if (readsymb != (text -> filesize))
     {
-        case FOPEN_ERR:
-            fprintf (stderr, "File opening error!\n");
-            break;
-
-        case EOF_READ_ERR:
-            fprintf (stderr, "EOF error!\n");
-            break;
-
-        case FREAD_ERR:
-            fprintf (stderr, "Fread error!\n");
-            break;
-
-        case FSEEK_ERR:
-            fprintf (stderr, "File seek error!\n");
-            break;
-
-        case FCLOSE_ERR:
-            fprintf (stderr, "File close error!\n");
-            break;
-
-        case SWAP_ERR:
-            fprintf (stderr, "Swap error!\n");
-            break;
-
-        default:
-            // perror();
+        return FREAD_ERR;
     }
+
+    text -> buffer[text -> filesize] = '\0';
+
+
+    if ((fclose (fileread)) != 0)
+    {
+        return FCLOSE_ERR;
+    }
+
+
+    int counter = 0;
+    char symbol = 0;
+    int i = 0, k = 0;
+
+    if (!i = strchr (text -> buffer[i], '\n'))
+    {
+        ++counter;
+    }
+
+    if (text -> buffer [i] != '\n')
+    {
+        text -> numlines = (counter + 1);
+    }
+
+    else text -> numlines = (counter);    // Обработка символа на конце буффера
+
+
+    /*while (*(text -> buffer + symbol) != '\0')        //strchr()
+    {
+        if (*(text -> buffer + symbol) == '\n')
+        {
+            *(text -> buffer + symbol) = '\0';
+            counter++;
+        }
+
+        ++symbol;
+    } */
+
+    //printf ("counter = %d\n", counter);
+
+    return 0;
 }
 
+
+//-----------------------------------------------------------------------------
+
+
+int InitStrings (struct Text *text)
+{
+
+    //printf ("Initstrings started.\n");
+    assert (Index != NULL);
+
+    int k = 1;
+    int i = 0;
+
+    char *ch = text->buffer;
+    assert (ch != NULL);
+
+
+    Index[0] = ch;
+    // strtok
+
+    while (1)
+    {
+        if (*(ch + i) == '\0')
+        {
+            if (i < text->filesize)
+            {
+                ++i;
+                Index[k] = (ch + i);
+                ++k;
+            }
+            else
+                break;
+        }
+        ++i;
+    }
+
+    for (i = 0; i < text->numlines; i++)
+    {
+        puts (Index [i]);
+    }
+
+    free (text -> buffer);
+    return 0;
+}
+
+
+//-----------------------------------------------------------------------------
+qsort(buffer, n, sizeof(int), comp);
+
+int comp(const void*, const void*);
+
+my_qsort(struct Text* text, int (*comp) (const void*, const void*))     //оболочка example
+{
+    q_sort(text->buffer, text->nline, sizeof(Line), comp);
+}
+
+
+q_sort(buffer, n, sizeof(line), comp_lr);
+
+
+int Sort1 (char **Index, int numlines)
+{
+    printf ("Sort1 started.\n\n");
+
+    int counter = 1, i = 0, str_comp_res = 0, strlen = 0;
+
+    while (counter != 0)
+    {
+        counter = 0;
+
+        for (int k = 0; k < numlines - 1; ++k)
+        {
+            for (i = 0; i < numlines; ++i)
+            {
+                str_comp_res = strcmp (Index [i], Index [i+1]);
+
+                if (str_comp_res > 0)
+                {
+                    if (JustSwap (Index, i) == 0)
+                    {
+                        counter = 1;
+                    }
+
+                    else return SWAP_ERR;
+                }
+            }
+        }
+    }
+
+    printf ("111111111111111111111111111111111111\n\n");
+
+    for (i = 0; i < numlines; ++i)
+        puts (Index [i]);
+
+
+    return 0;
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+int FileWriter (int numlines, char **Index)           //////////////////////////////////
+{
+    assert (filewrite != NULL);
+
+
+    for (int i = 0; i < numlines; i++)
+    {
+        fputs (Lines->str[i], filewrite);
+    }
+
+    fclose (filewrite);
+
+    return 0;
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+int JustSwap (char **Index, int i)
+{
+    char *tmp = 0;
+
+    tmp = Index [i];
+    Index [i] = Index [i+1];
+    Index [i+1] = tmp;
+    return 0;
+}
+
+int MemFree ()
+{
+    return 0;
+}

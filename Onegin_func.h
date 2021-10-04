@@ -7,74 +7,76 @@
 #include <assert.h>
 #include <errno.h>
 
-#include "Onegin_errors.h"
+#include "Onegin_errors.cpp"
 
-int FileBufferize (struct text *txtStructPtr)
+
+//-----------------------------------------------------------------------------
+
+
+int Text_Ctor(FILE *fileread)
+{
+    text->filesize = FileBufferize (fileread);
+
+    text->lines = (struct Index*) calloc (text.num_lines, sizeof(Line));
+
+    char* begin_str = text->lines[i].str;
+    InitStrings (&text);
+}
+
+int Text_Dtor(fileread)
+{
+    free(text->lines);
+    free(text->buffer);
+    text->lines = nullptr;
+    text->buffer = nullptr;
+    return 0;
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+int FileBufferize (struct Text *text, FILE *fileread)
 {
     int size_of_element = sizeof (char);
 
-    FILE *fileread = fopen ("Hamlet_example.txt", "rb");
 
     if (fileread == NULL)
     {
         return FOPEN_ERR;
     }
 
-    /*if (feof (fileread) == 0)
-    {
-        return EOF_READ_ERR;
-    }  */
-
-
     if ((fseek (fileread, 0, SEEK_END)) != 0)
     {
         return FSEEK_ERR;
     }
 
-    txtStructPtr -> MAXLETTERS = ftell(fileread);
-    fseek (fileread, 0, SEEK_SET);                                                /// специальная функция для освобождения памяти!
-
-
-    txtStructPtr -> buffer = (char *) calloc ((txtStructPtr -> MAXLETTERS + 1), size_of_element);
-
-    *(txtStructPtr -> buffer + txtStructPtr -> MAXLETTERS) = '\0';
-
-    int readsymb = fread (txtStructPtr -> buffer, size_of_element, (txtStructPtr -> MAXLETTERS + 1), fileread);
-
-    if (readsymb != (txtStructPtr -> MAXLETTERS))
-    {
-        return FREAD_ERR;
-    }                                                             /// сделать разрушающий диструктор для текст
-
-
-    //fread (txtStructPtr-> buffer, size_of_element, ((txtStructPtr -> MAXLETTERS) + 1), fileread);
-
-    int counter = 0;
-    char symbol = 0;
-
-    //char *Index [100000];
-
-    while (*(txtStructPtr -> buffer + symbol) != '\0')        //strchr  strtok
-    {
-        if (*(txtStructPtr -> buffer + symbol) == '\n')
-        {
-            *(txtStructPtr -> buffer + symbol) = '\0';
-            counter++;
-            symbol++;
-        }
-
-        else symbol++;
-    }
-
-    //printf ("counter = %d\n", counter);
-
-
-    txtStructPtr -> MAXLINES = (counter + 1);
-
+    text -> filesize = ftell (fileread);
     if ((fseek (fileread, 0, SEEK_SET)) != 0)
     {
         return FSEEK_ERR;
     }
+
+    return 0;
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+int Bufferizer (struct Text *text)
+{
+    text -> buffer = (char *) calloc ((text -> filesize + 1), size_of_element);
+
+    int readsymb = fread (text -> buffer, size_of_element, (text -> filesize + 1), fileread);
+
+
+    if (readsymb != (text -> filesize))
+    {
+        return FREAD_ERR;
+    }
+
+    text -> buffer[text -> filesize] = '\0';
 
 
     if ((fclose (fileread)) != 0)
@@ -82,40 +84,70 @@ int FileBufferize (struct text *txtStructPtr)
         return FCLOSE_ERR;
     }
 
+
+    int counter = 0;
+    char symbol = 0;
+    int i = 0, k = 0;
+
+    if (!i = strchr (text -> buffer[i], '\n'))
+    {
+        text ->  buffer[i] = '\0';
+        ++counter;
+    }
+
+    if (text -> buffer [i] != '\n')
+    {
+        text -> numlines = (counter + 1);
+    }
+
+    else text -> numlines = (counter);
+
+    /*while (*(text -> buffer + symbol) != '\0')        //strchr()
+    {
+        if (*(text -> buffer + symbol) == '\n')
+        {
+            *(text -> buffer + symbol) = '\0';
+            counter++;
+        }
+
+        ++symbol;
+    } */
+
+    // Обработка символа на конце буффера
+
+    //printf ("counter = %d\n", counter);
+
     return 0;
 }
 
 
 //-----------------------------------------------------------------------------
 
-int InitStrings (char **Index, struct text *text)
+int InitStrings (struct Text *text)
 {
 
     //printf ("Initstrings started.\n");
     assert (Index != NULL);
 
-    int q = 1;
+    int k = 1;
     int i = 0;
 
     char *ch = text->buffer;
     assert (ch != NULL);
 
 
-    //return 0;
     Index[0] = ch;
-    //puts (Index[0]);
+    // strtok
 
     while (1)
     {
-
         if (*(ch + i) == '\0')
         {
-            if (i < text->MAXLETTERS)
+            if (i < text->filesize)
             {
-
                 ++i;
-                Index[q] = (ch + i);
-                ++q;
+                Index[k] = (ch + i);
+                ++k;
             }
             else
                 break;
@@ -123,51 +155,63 @@ int InitStrings (char **Index, struct text *text)
         ++i;
     }
 
-    /*for (i = 0; i < text->MAXLINES; i++)
+    for (i = 0; i < text->numlines; i++)
     {
         puts (Index [i]);
-    } */
+    }
 
+    free (text -> buffer);
     return 0;
 }
 
 
 //-----------------------------------------------------------------------------
+qsort(buffer, n, sizeof(int), comp);
 
+int comp(const void*, const void*);
 
-int Sort1 (char **Index, int MAXLINES)
+my_qsort(struct Text* text, int (*comp) (const void*, const void*))     //оболочка example
 {
-    //int length = sizeof (*Index) / sizeof (int);
+    q_sort(text->buffer, text->nline, sizeof(Line), comp);
+}
 
 
-    unsigned counter = 1, maxrow = 0, i = 0;
-    char *tmp = 0;
+q_sort(buffer, n, sizeof(line), comp_lr);
+
+
+int Sort1 (char **Index, int numlines)
+{
+    printf ("Sort1 started.\n\n");
+
+    int counter = 1, i = 0, str_comp_res = 0, strlen = 0;
 
     while (counter != 0)
     {
-        counter = 0, maxrow = 0;
+        counter = 0;
 
-        for (int k = 0; k <= MAXLINES - 1; ++k)
+        for (int k = 0; k < numlines - 1; ++k)
         {
-            for (i = 0; i < (MAXLINES - k - 1); ++i)
+            for (i = 0; i < numlines; ++i)
             {
-                int str_comp_res = strcmp (Index [i], Index [i+1]);
+                str_comp_res = strcmp (Index [i], Index [i+1]);
 
                 if (str_comp_res > 0)
                 {
-                    tmp = Index [i];
-                    Index [i] = Index [i+1];
-                    Index [i+1] = tmp;
+                    if (JustSwap (Index, i) == 0)
+                    {
+                        counter = 1;
+                    }
 
-                    counter = 1;
-                    ++maxrow;
+                    else return SWAP_ERR;
                 }
             }
         }
     }
 
-    //for (i = 0; i < MAXLINES; i++)
-        //puts (Index [i]);
+    printf ("111111111111111111111111111111111111\n\n");
+
+    for (i = 0; i < numlines; ++i)
+        puts (Index [i]);
 
 
     return 0;
@@ -177,18 +221,36 @@ int Sort1 (char **Index, int MAXLINES)
 //-----------------------------------------------------------------------------
 
 
-FILE *FileWriter (int MAXLINES, char **Index)
+FILE *FileWriter (int numlines, char **Index, FILE *filewrite)           //////////////////////////////////
 {
-    FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
     assert (filewrite != NULL);
 
 
-    for (int i = 0; i < MAXLINES; i++)
+    for (int i = 0; i < numlines; i++)
     {
-        fputs (Index [i], filewrite);
+        fputs (Lines->str[i], filewrite);
     }
 
     fclose (filewrite);
 
     return filewrite;
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+char *JustSwap (char **Index, int i)
+{
+    char *tmp = 0;
+
+    tmp = Index [i];
+    Index [i] = Index [i+1];
+    Index [i+1] = tmp;
+    return 0;
+}
+
+int MemFree ()
+{
+    return 0;
 }

@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <locale.h>                                         ///!!!!!!! buffer was declared as array => memory error!!!
+#include <locale.h>                                        
 #include <TXLib.h>
 #include <sys/types.h>
 #include <assert.h>

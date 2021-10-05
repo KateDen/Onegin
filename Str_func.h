@@ -52,4 +52,3 @@ int JustSwap (struct Text *text, int i);
 int FileWriter (struct Text *text, FILE *filewrite);
 
 int ErrorPrints (void);
-

@@ -18,8 +18,8 @@ int InitStrings (struct Text *text);
 int Sort1 (struct Text *text, int numlines);
 
 int JustSwap (struct Text *text, int i);
-                                                                        //merge sort - сортировка слиянием
+
 int FileWriter (struct Text *text);
 
-int ErrorPrints (void);
+void ErrorPrints (void);
 

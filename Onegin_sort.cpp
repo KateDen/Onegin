@@ -5,17 +5,18 @@
 
 
 
-int main ()
-{
+int main () {
+
     struct Text text = {};
     struct Line lines = {};
 
     FILE *fileread = fopen ("Hamlet_example.txt", "rb");
 
-    if (!fileread)
-    {
+    if (!fileread) {
+
         return FOPEN_ERR;
     }
+
 
     Text_Ctor(fileread, &text);
 
@@ -23,10 +24,12 @@ int main ()
 
     FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
 
-    if (!filewrite)
-    {
+
+    if (!filewrite) {
+
         return FOPEN_ERR;
     }
+
 
     FileWriter (&text,filewrite);
 
@@ -41,8 +44,8 @@ int main ()
 //-----------------------------------------------------------------------------
 
 
-int ErrorPrints (void)
-{
+int ErrorPrints (void) {
+
     if (!errno) return 0;
 
     switch (errno)

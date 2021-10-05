@@ -1,12 +1,12 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <locale.h>
-#include <TXLib.h>
-#include <sys/types.h>
-#include <assert.h>
-#include <errno.h>
+//#include <string.h>
+//#include <stdlib.h>
+//#include <ctype.h>
+//#include <locale.h>
+//#include <TXLib.h>
+//#include <sys/types.h>
+//#include <assert.h>
+//#include <errno.h>
 
 enum error_consts {
     FOPEN_ERR    = 1,
@@ -18,20 +18,22 @@ enum error_consts {
 };
 
 
+//typedef         //?
 struct Text
 {
     char *buffer;
-    int filesize;
+    int file_size;
 
     int num_lines;
     struct Line* lines;
-};
+} text;
 
+//typedef            //?
 struct Line
 {
     char *str;
     int length;
-};
+} lines;
 
 #include "Onegin_func.cpp"
 #include "Onegin_errors.cpp"
@@ -40,10 +42,8 @@ struct Line
 
 int main ()
 {
-    /**setlocale (LC_ALL, "Russian");
-    qsort (void *getlines, num_lines, size_t MAXWORDS, strcmp (*line1, *line2)); */
-
-    struct Text text = {};
+    Text text = {};
+    Line lines = {};
 
     FILE *fileread = fopen ("Hamlet_example.txt", "rb");
 
@@ -76,7 +76,7 @@ int main ()
 //-----------------------------------------------------------------------------
 
 
-int ErrorPrints (void)
+void ErrorPrints (void)
 {
     if (!errno) return 0;
 
@@ -107,6 +107,6 @@ int ErrorPrints (void)
             break;
 
         default:
-            perror("Undefined error:");
+            perror("Undefined error\n");
     }
 }

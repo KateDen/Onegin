@@ -16,9 +16,9 @@
 
 int Text_Ctor(FILE *fileread, struct Text *text)
 {
-    text->filesize = FileReader (text, fileread);
+    text->file_size = FileReader (text, fileread);
 
-    text->lines = (struct Line*) calloc (text->num_lines, sizeof(Line));
+    text->lines = (struct Line*) calloc (text->num_lines, sizeof (Line));
 
     //char* begin_str = text->lines[i].str;          ///////////////////////////////////////
     InitStrings (text);
@@ -52,7 +52,7 @@ int FileReader (struct Text *text, FILE *fileread)
         return FSEEK_ERR;
     }
 
-    text -> filesize = ftell (fileread);
+    text -> file_size = ftell (fileread);
 
     if ((fseek (fileread, 0, SEEK_SET)) != 0)
     {
@@ -68,16 +68,16 @@ int FileReader (struct Text *text, FILE *fileread)
 
 int Bufferizer (struct Text *text, FILE *fileread)
 {
-    text -> buffer = (char *) calloc ((text -> filesize + 1), sizeof (char));
+    text -> buffer = (char *) calloc ((text -> file_size + 1), sizeof (char));
 
-    int readsymb = fread (text -> buffer, sizeof (char), (text -> filesize + 1), fileread);
+    int readsymb = fread (text -> buffer, sizeof (char), (text -> file_size + 1), fileread);
 
-    if (readsymb != (text -> filesize))
+    if (readsymb != (text -> file_size))
     {
         return FREAD_ERR;
     }
 
-    text -> buffer[text -> filesize] = '\0';
+    text -> buffer[text -> file_size] = '\0';
 
 
     if ((fclose (fileread)) != 0)
@@ -92,19 +92,19 @@ int Bufferizer (struct Text *text, FILE *fileread)
 
     for (;;)
     {
-        inl = strchr((const char*)text -> buffer[inl], '\n');
+        inl = strchr((const char *)(*text -> buffer + *inl), '\n'); //?
 
         if (!inl)        //???
         {
             ++counter;
         }
 
-    if (text -> buffer[inl] != '\n')
+    if (*text -> buffer + *inl != '\n')         // Обработка символа на конце буффера
     {
         text -> num_lines = (counter + 1);
     }
 
-    else text -> num_lines = (counter);    // Обработка символа на конце буффера
+    else text -> num_lines = (counter);
 
 
     /*while (*(text -> buffer + symbol) != '\0')        //strchr()
@@ -129,7 +129,6 @@ int Bufferizer (struct Text *text, FILE *fileread)
 
 int InitStrings (struct Text *text)
 {
-
     //printf ("Initstrings started.\n");
     assert (text != NULL);
 
@@ -147,7 +146,7 @@ int InitStrings (struct Text *text)
     {
         if (*(ch + i) == '\0')
         {
-            if (i < text->filesize)
+            if (i < text->file_size)
             {
                 ++i;
                 text->lines[k].str = (ch + i);
@@ -251,10 +250,5 @@ int JustSwap (char **Index, int i)
     tmp = Index [i];
     Index [i] = Index [i+1];
     Index [i+1] = tmp;
-    return 0;
-}
-
-int MemFree ()
-{
     return 0;
 }

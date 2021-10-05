@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <locale.h>
-#include <TXLib.h>
-#include <assert.h>
-#include <errno.h>
+
 
 #include "Str_func.h"
 
@@ -105,6 +98,7 @@ int Bufferizer (struct Text *text, FILE *fileread)
     }
 
     else text -> num_lines = (counter);
+    }
 
 
     /*while (*(text -> buffer + symbol) != '\0')        //strchr()
@@ -224,10 +218,8 @@ q_sort(buffer, n, sizeof(line), comp_lr);
 //-----------------------------------------------------------------------------
 
 
-int FileWriter (struct Text *text)           //////////////////////////////////
+int FileWriter (struct Text *text, FILE *filewrite)           //////////////////////////////////
 {
-    assert (filewrite != NULL);
-
 
     for (int i = 0; i < text->num_lines; i++)
     {

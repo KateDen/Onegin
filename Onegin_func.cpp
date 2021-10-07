@@ -1,20 +1,35 @@
-
 #include "Str_func.h"
 
+// везде принтфы и ассерты!
+// обработать все ворнинги
+//check all returns!
+// nullptr
+// print original text - find the place with this note, paste there
 
 
-int Text_Ctor(FILE *fileread, struct Text *text) {
 
-    text->file_size = FileReader (text, fileread);
+//-----------------------------------------------------------------------------
+
+
+int text_Ctor(FILE *fileread, struct Text *text) {
+
+    // rename - done
+    text->file_size = file_sizer (fileread);
+
+    text->buffer = create_buffer (text->file_size, fileread);
+    
+    text->num_lines = str_counter (&text); //что принимает?
 
     text->lines = (struct Line*) calloc (text->num_lines, sizeof (Line));
+    
+    assert(text->lines);
 
-    //char* begin_str = text->lines[i].str;          ///////////////////////////////////////
+    init_strings (text);
 
-    InitStrings (text);
+    return 0;
 }
 
-int Text_Dtor(struct Text *text) {
+int text_Dtor(struct Text *text) {
 
     free(text->lines);
     free(text->buffer);
@@ -26,44 +41,43 @@ int Text_Dtor(struct Text *text) {
 
 //-----------------------------------------------------------------------------
 
+// rename - done
+ssize_t file_sizer (FILE *fileread) {
 
-int FileReader (struct Text *text, FILE *fileread) {
-
-    int size_of_element = sizeof (char);
-
-
-    if (fileread == NULL) {
-
-        return FOPEN_ERR;
+    if (fileread == nullptr) {
+        //return FOPEN_ERR;          //?--
     }
 
-    if ((fseek (fileread, 0, SEEK_END)) != 0) {
-
+    if ((fseek (fileread, 0, SEEK_END)) == -1) {
         return FSEEK_ERR;
     }
 
-    text -> file_size = ftell (fileread);
+    ssize_t file_size = ftell (fileread);
+    
+    if (file_size == -1) {
+        return FTELL_ERR;
+    }
 
-    if ((fseek (fileread, 0, SEEK_SET)) != 0) {
-
+    if ((fseek (fileread, 0, SEEK_SET)) == -1) {
         return FSEEK_ERR;
     }
 
-    return 0;
+    return file_size;
 }
 
 
 //-----------------------------------------------------------------------------
 
 
-int Bufferizer (struct Text *text, FILE *fileread) {
+int create_buffer (FILE *fileread) {
+
+    assert(fileread != nullptr);
 
     text -> buffer = (char *) calloc ((text -> file_size + 1), sizeof (char));
 
-    int readsymb = fread (text -> buffer, sizeof (char), (text -> file_size + 1), fileread);
+    int readsymb = fread (text -> buffer, sizeof (char), text -> file_size, fileread);
 
     if (readsymb != (text -> file_size)) {
-
         return FREAD_ERR;
     }
 
@@ -71,78 +85,61 @@ int Bufferizer (struct Text *text, FILE *fileread) {
 
 
     if ((fclose (fileread)) != 0) {
-
         return FCLOSE_ERR;
     }
 
+}
 
-    int counter = 0, k = 0;
-    char symbol = 0;
-    char *inl = 0;
+// new func - done 
+size_t str_counter (struct Text *text) {
 
-    for (; k <= text -> file_size;) {
+    assert (text != nullptr);
 
-        inl = strchr((const char*)*(text -> buffer + (int)(inl - text -> buffer)), '\n'); //?
+    char* begin_str = buffer;
+    char* end_str   = buffer;
+    size_t numb_str = 0;
 
-        if (!inl) {     //???
+    while((end_str = strchr(begin_str, '\n')) != nullptr) {
 
-            ++counter;
-            ++inl;
-            ++k;
-        }
+        ++numb_str;
+        begin_str = end_str + 1;
     }
 
-    if (*(text -> buffer + (int)(inl - text -> buffer))!= '\n') {        // Обработка символа на конце буффера
+    // переделать - done
+    if (begin_str != '\n') {
 
-        text -> num_lines = (counter + 1);
+        ++numb_str;
     }
 
-    else text -> num_lines = (counter);
-
-
-    /*while (*(text -> buffer + symbol) != '\0') {      //strchr()
-
-        if (*(text -> buffer + symbol) == '\n')
-        {
-            *(text -> buffer + symbol) = '\0';
-            counter++;
-        }
-
-        ++symbol;
-    } */
-
-    //printf ("counter = %d\n", counter);
-
-    return 0;
+    return numb_str;
 }
 
 
 //-----------------------------------------------------------------------------
 
 
-int InitStrings (struct Text *text) {
+int init_strings (struct Text *text) {
 
-    //printf ("Initstrings started.\n");
-    assert (text != NULL);
+    assert (text != nullptr);
 
-    int k = 1;
-    int i = 0;
+    // delete
+    size_t i = 0;
 
-    char *ch = text->buffer;
-    assert (ch != NULL);
+    // rename
+    char * cor_symb = text->buffer;
+    //assert (ch != NULL);          // so need?
 
 
-    text->lines[i].str = ch;
-    // strtok
-
+    // почти копипаст функции подсчёта строк
     while (1) {
 
-        if (*(ch + i) == '\0') {
+    
+        if (*(cor_symb + i) == '\0') {
 
             if (i < text->file_size) {
 
                 ++i;
-                text->lines[k].str = (ch + i);
+                text->lines[k].str = (cor_symb + i);
                 ++k;
             }
 
@@ -154,10 +151,10 @@ int InitStrings (struct Text *text) {
 
     for (i = 0; i < text->num_lines; i++) {
 
-        puts (text->lines[k].str);
+        fputs (text->lines[k].str);
+        fputc ('\n');
     }
 
-    free (text -> buffer);
     return 0;
 }
 
@@ -167,7 +164,7 @@ int InitStrings (struct Text *text) {
 
 int comp(const void*, const void*);
 
-my_qsort(struct Text* text, int (*comp) (const void*, const void*))     //оболочка example
+my_qsort(struct Text* text, int (*comp) (const void*, const void*))    
 {
     q_sort(text->buffer, text->nline, sizeof(Line), comp);
 }
@@ -217,29 +214,32 @@ q_sort(buffer, n, sizeof(line), comp_lr);
 
 //-----------------------------------------------------------------------------
 
+//rename
+int FileWriter (struct Text *text, FILE *filewrite) {     
 
-int FileWriter (struct Text *text, FILE *filewrite) {          //////////////////////////////////
-
+    // проверки
     for (int i = 0; i < text->num_lines; i++) {
-
+        // strchr() fputs - much faster than putc
         fputs (text->lines[i].str, filewrite);
+        fputc('\n', filewrite);
     }
-
-    fclose (filewrite);
 
     return 0;
 }
+
+// print original text 
 
 
 //-----------------------------------------------------------------------------
 
 
-int JustSwap (char **Index, int i) {
+/*int just_swap (struct , int i) {
 
     char *tmp = 0;
 
     tmp = Index [i];
     Index [i] = Index [i+1];
     Index [i+1] = tmp;
+
     return 0;
-}
+}*/

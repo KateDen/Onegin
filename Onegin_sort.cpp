@@ -1,41 +1,33 @@
-
-
 #include "Str_func.h"
-
-
-
 
 int main () {
 
-    struct Text text = {};
+    struct Text text  = {};
     struct Line lines = {};
 
     FILE *fileread = fopen ("Hamlet_example.txt", "rb");
 
     if (!fileread) {
-
         return FOPEN_ERR;
     }
 
+    text_Ctor(fileread, &text);
 
-    Text_Ctor(fileread, &text);
-
-    //Sort1 (&text);
+    //Sort - вызов
 
     FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
 
 
     if (!filewrite) {
-
-        return FOPEN_ERR;
+        return error_prints(FOPEN_ERR);
     }
 
 
-    FileWriter (&text,filewrite);
+    FileWriter (&text, filewrite);
 
-    Text_Dtor(&text);
+    text_Dtor (&text);
 
-    ErrorPrints();
+    error_prints();
 
     return 0;
 }
@@ -44,11 +36,11 @@ int main () {
 //-----------------------------------------------------------------------------
 
 
-int ErrorPrints (void) {
+int error_prints (int error) {
 
-    if (!errno) return 0;
+    if (!error) return 0;
 
-    switch (errno)
+    switch (error)
     {
         case FOPEN_ERR:
             fprintf (stderr, "File opening error!\n");     //fprintf ("%s\n", stderr(errno));
@@ -75,6 +67,8 @@ int ErrorPrints (void) {
             break;
 
         default:
-            perror("Undefined error\n");
+            perror("Undefined error");
     }
+
+    return error;
 }

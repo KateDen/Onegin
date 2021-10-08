@@ -8,10 +8,14 @@ int main () {
     FILE *fileread = fopen ("Hamlet_example.txt", "rb");
 
     if (!fileread) {
-        return FOPEN_ERR;
+        return error_prints (FREAD_ERR);
     }
 
-    text_Ctor(fileread, &text);
+    int error = text_Ctor(fileread, &text);
+
+    if (!(fclose(fileread))) {
+        return error_prints (FCLOSE_ERR);
+    }
 
     //Sort - вызов
 
@@ -19,11 +23,12 @@ int main () {
 
 
     if (!filewrite) {
-        return error_prints(FOPEN_ERR);
+        return ;
     }
 
+    file_output (&text, filewrite);
 
-    FileWriter (&text, filewrite);
+    file_original_output (&text, filewrite);
 
     text_Dtor (&text);
 
@@ -40,14 +45,14 @@ int error_prints (int error) {
 
     if (!error) return 0;
 
-    switch (error)
+    switch (error)         //мб всю печать ошибок через perror?
     {
         case FOPEN_ERR:
             fprintf (stderr, "File opening error!\n");     //fprintf ("%s\n", stderr(errno));
             break;
 
-        case EOF_READ_ERR:
-            fprintf (stderr, "EOF error!\n");
+        case PTR_ERR:
+            fprintf (stderr, "Wrong pointer!\n");
             break;
 
         case FREAD_ERR:
@@ -64,6 +69,10 @@ int error_prints (int error) {
 
         case SWAP_ERR:
             fprintf (stderr, "Swap error!\n");
+            break;
+
+        case FPUT_ERR:
+            fprintf (stderr, "File writing error!\n");
             break;
 
         default:

@@ -1,19 +1,22 @@
 #include "Str_func.h"
 
+int error = 0;
+
 int main () {
 
     struct Text text  = {};
-    struct Line lines = {};
+//errno = o; - обнулять перед системными вызовами, следить чтобы не сохранялся код старой ошибки
 
     FILE *fileread = fopen ("Hamlet_example.txt", "rb");
 
     if (!fileread) {
+        printf ("%p \t fread err here\n", fileread);
         return error_prints (FREAD_ERR);
     }
 
-    int error = text_Ctor(fileread, &text);
+    error = text_Ctor(fileread, &text);
 
-    if (!(fclose(fileread))) {
+    if (fclose(fileread) == EOF) {
         return error_prints (FCLOSE_ERR);
     }
 
@@ -21,9 +24,8 @@ int main () {
 
     FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
 
-
     if (!filewrite) {
-        return ;
+        return error_prints (FOPEN_ERR);
     }
 
     file_output (&text, filewrite);
@@ -32,7 +34,7 @@ int main () {
 
     text_Dtor (&text);
 
-    error_prints();
+    error_prints(error);
 
     return 0;
 }
@@ -52,7 +54,7 @@ int error_prints (int error) {
             break;
 
         case PTR_ERR:
-            fprintf (stderr, "Wrong pointer!\n");
+            fprintf (stderr, "Wrong pointer!\n");          //perror ("error"); - только для системных функций
             break;
 
         case FREAD_ERR:

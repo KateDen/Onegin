@@ -2,9 +2,12 @@
 
 int error = 0;
 
+
+
 int main () {
 
     struct Text text  = {};
+    
 //errno = o; - обнулять перед системными вызовами, следить чтобы не сохранялся код старой ошибки
 
     FILE *fileread = fopen ("Hamlet_example.txt", "rb");
@@ -20,13 +23,13 @@ int main () {
         return error_prints (FCLOSE_ERR);
     }
 
-    //Sort - вызов
-
     FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
 
     if (!filewrite) {
         return error_prints (FOPEN_ERR);
     }
+
+    my_qsort (&text, text.num_lines, sizeof (char *), comparator_1);
 
     file_output (&text, filewrite);
 
@@ -47,10 +50,10 @@ int error_prints (int error) {
 
     if (!error) return 0;
 
-    switch (error)         //мб всю печать ошибок через perror?
+    switch (error)     
     {
         case FOPEN_ERR:
-            fprintf (stderr, "File opening error!\n");     //fprintf ("%s\n", stderr(errno));
+            perror ("File opening error");     //fprintf ("%s\n", stderr(errno));
             break;
 
         case PTR_ERR:
@@ -58,22 +61,22 @@ int error_prints (int error) {
             break;
 
         case FREAD_ERR:
-            fprintf (stderr, "Fread error!\n");
+            perror ("Fread error");
             break;
 
         case FSEEK_ERR:
-            fprintf (stderr, "File seek error!\n");
+            perror ("File seek error");
             break;
 
         case FCLOSE_ERR:
-            fprintf (stderr, "File close error!\n");
+            perror ("File close error");
             break;
 
         case SWAP_ERR:
             fprintf (stderr, "Swap error!\n");
             break;
 
-        case FPUT_ERR:
+        case CALLOC_ERR:
             fprintf (stderr, "File writing error!\n");
             break;
 

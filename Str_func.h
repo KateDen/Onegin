@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <locale.h>
-#include <sys/types.h>
+//#include <locale.h>
+// #include <sys/types.h>
 #include <assert.h>
 #include <errno.h>
 
@@ -15,12 +15,12 @@ enum error_consts {
     FCLOSE_ERR   = 5,
     SWAP_ERR     = 6,
     FTELL_ERR    = 7,
-    FPUT_ERR     = 8
+    CALLOC_ERR   = 8
 };
 
-#define PRINT_LINE printf("I'm at line %d in %s\n", __LINE__, __PRETTY_FUNCTION__)
+//#define PRINT_LINE printf("I'm at line %d in %s\n", __LINE__, __PRETTY_FUNCTION__)
 
-#define PRINT_PTR(ptr) printf("I'm %s at %p\n", #ptr, ptr)
+//#define PRINT_PTR(ptr) printf("I'm %s at %p\n", #ptr, ptr)
 
 
 struct Text
@@ -40,6 +40,10 @@ struct Line
 
 //==================================================================================
 
+// см что принимают функции!
+// см Что возвращают
+// названия следить
+
 int text_Ctor (FILE *fileread, struct Text *text);
 void text_Dtor(struct Text *text);
 
@@ -47,6 +51,11 @@ ssize_t file_sizer (FILE *fileread);
 char* create_buffer (struct Text *text, FILE *fileread);
 size_t str_counter (struct Text *text);
 void init_strings (struct Text *text);
+
+int comparator_1 (const void *el_1, const void *el_2);                                  // add sorts?comparator? is_alnum...........
+void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comparator)(const void*, const void*));
+void swapper (void *left, void *right);
+char *is_alnum (char *str);
 
 int Sort1 (struct Text *text, int numlines);
 int just_swap (struct Text *text, int i);

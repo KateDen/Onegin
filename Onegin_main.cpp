@@ -8,8 +8,6 @@ int main () {
 
     struct Text text  = {};
     
-//errno = o; - обнулять перед системными вызовами, следить чтобы не сохранялся код старой ошибки
-
     FILE *fileread = fopen ("Hamlet_example.txt", "rb");
 
     if (!fileread) {
@@ -23,21 +21,25 @@ int main () {
         return error_prints (FCLOSE_ERR);
     }
 
+    printf ("everything is good then qsort\n");
+
+    my_qsort (text.lines, text.num_lines, sizeof (struct Line), comparator_1);
+
+    //my_qsort (text.lines, text.num_lines, sizeof (struct Line), strcmp);
+
     FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
 
     if (!filewrite) {
         return error_prints (FOPEN_ERR);
     }
 
-    my_qsort (&text, text.num_lines, sizeof (char *), comparator_1);
-
     file_output (&text, filewrite);
 
-    file_original_output (&text, filewrite);
+    // file_original_output (&text, filewrite);
 
     text_Dtor (&text);
 
-    error_prints(error);
+    error_prints (error);
 
     return 0;
 }
@@ -53,11 +55,11 @@ int error_prints (int error) {
     switch (error)     
     {
         case FOPEN_ERR:
-            perror ("File opening error");     //fprintf ("%s\n", stderr(errno));
+            perror ("File opening error");
             break;
 
         case PTR_ERR:
-            fprintf (stderr, "Wrong pointer!\n");          //perror ("error"); - только для системных функций
+            fprintf (stderr, "Wrong pointer!\n");
             break;
 
         case FREAD_ERR:

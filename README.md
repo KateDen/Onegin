@@ -17,4 +17,4 @@ The text should be in English.
 
 Your sorted text will appear in this file: "Hamlet_sorted.txt"
 
-### Enjoy using this program!
+#### Enjoy using this program!

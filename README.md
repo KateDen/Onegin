@@ -1,6 +1,6 @@
 # Onegin
 
-This program can sort the text from a file in strihgt and reverse order and output the original one.
+This program can sort the text from a file in direct and reverse order and output the original one.
 The text should be in English.
 
 
@@ -12,7 +12,7 @@ The text should be in English.
 ./app "File_name.txt"`
 
 
-#### Example files in this programm:
-<"Hamlet_ex.txt">
+#### Example files in this program:
+< "Hamlet_ex.txt" >
 
-Your sorted text will appesr in this file: <"Hamlet_sorted">
+Your sorted text will appear in this file: < "Hamlet_sorted.txt" >

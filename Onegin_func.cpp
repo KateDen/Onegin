@@ -1,12 +1,5 @@
 #include "Str_func.h"
 
-// везде принтфы и ассерты!
-// обработать все ворнинги
-//check all returns!
-// nullptr
-// print original text - find the place with this note, paste there
-// assert -> if in create buffer
-
 
 extern int error;
 
@@ -17,14 +10,13 @@ int text_Ctor(FILE *fileread, struct Text *text) {
 
     assert (fileread != nullptr);
 
-    //int error = 0;
     text -> file_size = file_sizer (fileread);
 
     text -> buffer = create_buffer (text, fileread);
     
     text -> num_lines = str_counter (text);  
 
-    text -> lines = (struct Line*) calloc (text -> num_lines, sizeof (Line));
+    text -> lines = (struct Line*) calloc (text -> num_lines, sizeof (struct Line));
     
     if (text -> lines == nullptr) {
         error = CALLOC_ERR;
@@ -32,179 +24,16 @@ int text_Ctor(FILE *fileread, struct Text *text) {
 
     init_strings (text);
 
-   // my_qsort ((void *) text -> lines, text -> num_lines, sizeof (text -> lines), comparator_1);     
-
-    return 0;
-}
-
-//=========================================================================================================
-
-void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comparator_1)(const void*, const void*)) {
-
-    char *first_str = (char *) ptr;
-
-    char *left = ((struct Line *) ptr) -> str; 
-    char *right = ((struct Line *) ptr + num_el - 1) -> str; 
-    char *middle = ((struct Line *) (num_el / 2)) -> str;  
-
-        do
-        {
-           while (comparator_1 (left, middle) < 0) {
-                ++left;
-             }
-            while  (comparator_1 (right, middle) > 0)
-                --right;
-                
-            if (left <= right) {
-                swapper (left, right);
-            }
-
-        } while (left <= right);
-
-        if (right > first_str) {
-            my_qsort ((void *) right, num_el, size_el, comparator_1);
-        }
-
-        if ((size_t) left < num_el) {
-            my_qsort ((void *) left, num_el, size_el, comparator_1);
-        }
-}
-
-
-//=========================================================================================================
-
-
-// void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comp)(const void *, const void *)) {
-
-//     int i = 0;
-
-//     char *left = ((struct Line *) ptr) -> str; 
-//     char *right = ((struct Line *) ptr + num_el - 1) -> str; 
-//     char *middle = ((struct Line *) num_el / 2) -> str;          
-//     //char *last = 0;  ?
-
-//     if (left >= right) {                     // if 2 elements in an arrow
-//         return;
-//     }
-
-//     swapper (right, (right - left) / 2);                 //redo
-
-//     char *last = left;                                             //for what?
-
-//     whle (left <= right) {
-//         if (comparator_1 ((const void *) left, (const void *) middle) > 0) {          //to be continued
-//             ++left;
-//         }
-
-//         if (comparator_1 ((const void *) left, (const void *) middle) < 0) {          //to be continued
-//             --right;
-//         }
-
-//         if (comparator_1 ((const void *) left, (const void *) middle) == 100 || comparator_1 ((const void *) left, (const void *) right) == -100) {          //to be continued
-
-//         }
-
-
-//     for (i = left + 1; i <= right; ++i) {                      // redo
-//         if (v[i] < v[left]) {
-//             swapper (++last, i);
-//         }
-
-//         swapper (left, last);
-
-//         my_qsort ();
-//         my_qsort (last + 1, right);
-//     }
-
-// }
-
-
-
-int comparator_1 (const void *el_1, const void *el_2) {                    // almost done
-    
-    assert (el_1 != nullptr);
-    assert (el_2 != nullptr);
-
-    char *str_1 = ((struct Line *) el_1) -> str;
-    char *str_2 = ((struct Line *) el_1) -> str;
-
-    while (*str_1 != '\0' || *str_2 != '\0') {
-        
-        if (isalnum (*str_1) == 0) ++str_1;
-
-        if (isalnum (*str_2) == 0) ++str_2;
-
-        return str_1 - str_2;            
-    }
-
-    printf ("1\n");
-
-    if (*str_1 == '\0') {
-        ++str_1;
-    } 
-
-    if (*str_2 == '\0') {
-        ++str_2;
-    }
-
     return 0;
 }
 
 
-char *is_alnum (char *str) {                    //done
-
-    while (1) {
-        if (isalnum (*str) != 0) {
-
-            return str;
-        }
-
-        else
-            ++str;
-    }
-}
-
-
-int sort_1 (struct Text *text, int error) {                // -> qsort 2
-    
-    return 0;
-}
-
-
-void swapper (void *left, void *right) {
-
-    char *tmp = 0;
-
-    char *left_sw = (char *) left;
-    char *right_sw = (char *) right;
-
-    tmp = left_sw;
-    left_sw = right_sw;
-    right_sw = tmp;
-}
-
-
-//===============================================================================================
-
-
-void text_Dtor(struct Text *text) {
-
-    assert (text != nullptr);
-
-    free(text->lines);
-    free(text->buffer);
-    text->lines = nullptr;
-    text->buffer = nullptr;
-}
-
-
-//===============================================================================================
+//==============================================================================================
 
 
 ssize_t file_sizer (FILE *fileread) {
 
     assert (fileread != nullptr);
-
 
     if ((fseek (fileread, 0, SEEK_END)) == -1) {
         return error_prints (FSEEK_ERR);
@@ -226,7 +55,7 @@ ssize_t file_sizer (FILE *fileread) {
 
 //===============================================================================================
 
-//хранить переменную кода ошибки в ctore и передавать ее в функции
+
 char* create_buffer (struct Text *text, FILE *fileread) {
 
     assert(fileread != nullptr);
@@ -241,7 +70,6 @@ char* create_buffer (struct Text *text, FILE *fileread) {
 
     int readsymb = fread (text -> buffer, sizeof (char), text -> file_size, fileread);
 
-    //PRINT_LINE;
     assert (readsymb);
 
     text -> buffer[text -> file_size] = '\0';
@@ -296,10 +124,10 @@ void init_strings (struct Text *text) {
         text -> lines[i].str    = begin_str;
         text -> lines[i].length = end_str - begin_str;
         
-        // проверка на end_str > text->buffer - done
         if (*(end_str - 1) == '\r')
         {
             *(end_str - 1) = '\0';
+            text -> lines[i].length--;
         }
         else 
         {
@@ -316,17 +144,119 @@ void init_strings (struct Text *text) {
         text -> lines[i].length = text->buffer + text->file_size - begin_str;
     }
 
-    // for (i = 0; i < text->num_lines; i++) {
-
-    //     // EOF == ?
-    //     fputs (text->lines[i].str, stdout);       //проверки тут?
-    //     fputc ('\n', stdout);
-    // }
 }
 
-//=================================================================================================
 
 //=================================================================================================
+
+
+void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comparator)(const void*, const void*)) {
+
+    int left  = 0;
+    int right = num_el - 1;
+
+    //struct String *pointer = ptr;
+
+    struct Line pilot = *((struct Line *) ((char *) ptr + size_el * (num_el / 2)));
+    //printf ("pilot = \t\t\t%c\n", *(pilot.str));
+
+    do
+    {        
+        //printf ("do!\n");
+        
+        while (comparator ((char *)ptr + size_el * left, &pilot) < 0) {
+            ++left;
+            //printf ("here left = %d\n", left);        
+        }
+        //printf ("here left = %d\n", left);
+        while (comparator ((char *)ptr + size_el * right, &pilot) > 0 && right > 0) {
+            --right;
+            //printf ("here right = %d\n", right);        
+        }
+
+        if (left <= right) {
+            swapper ((struct Line *)((char *) ptr + size_el * left), ((struct Line *)((char *) ptr + size_el * right)), size_el);
+
+            ++left;
+            --right;
+        }
+        
+    } while (left <= right);
+    
+    if (right > 0) {
+        my_qsort (ptr, right + 1, size_el, comparator);
+    }
+
+    if (left < num_el) {
+        my_qsort (((char *) ptr + size_el * left), num_el - left, size_el, comparator);
+    }
+
+
+}
+
+
+//=========================================================================================================
+
+
+int comparator_1 (const void *el_1, const void *el_2) {                  
+   
+    assert (el_1 != nullptr);
+    assert (el_2 != nullptr);
+
+    //printf ("I'm in comparator_1\n");
+    int i = 0, k = 0;
+
+    char *str_1 = ((struct Line *) el_1)->str;
+    char *str_2 = ((struct Line *) el_2)->str;
+
+    //printf ("%c\t%c\n", *str_1,*str_2);
+    
+
+    while (!isalnum (str_1[i]) && str_1[i] != '\0') ++i;   
+    while (!isalnum (str_2[k]) && str_2[k] != '\0') ++k;
+    
+    while (str_1[i] != '\0' && str_2[k] != '\0' && str_1[i] == str_2[k]) {  
+
+        while (!isalnum (str_1[i]) && str_1[i] != '\0') ++i;   
+        while (!isalnum (str_2[k]) && str_2[k] != '\0') ++k;
+            
+        ++i;
+        ++k; 
+    }
+
+    // printf ("%d\t%d\n", i, k);
+    // return strcmp (str_1, str_2);
+
+    return str_1[i] - str_2[k];
+}
+
+
+//=================================================================================================
+
+
+void swapper (void *el_1, void *el_2, size_t size_el) {            //??? ...-> str => жадный алгоритм? мы же меняем структуры
+    //printf ("i'm in swapper!\n");
+
+    // char *tmp    = {};
+    // char *swap_1 = ((struct Line *) el_1) -> str;
+    // char *swap_2 = ((struct Line *) el_2) -> str;
+    // printf ("swap: %c\t\t%c\n", *swap_1,*swap_2);
+
+
+    // tmp = swap_1;
+    //       swap_1 = swap_2;
+    //                swap_2 = tmp;
+
+    struct Line tmp = {};
+    struct Line *left_sw  = (struct Line *) el_1;
+    struct Line *right_sw = (struct Line *) el_2;
+            
+    tmp = *left_sw;
+          *left_sw = *right_sw;
+                     *right_sw = tmp;
+}
+
+//===============================================================================================
 
 
 void file_output (struct Text *text, FILE *filewrite) {     
@@ -339,6 +269,7 @@ void file_output (struct Text *text, FILE *filewrite) {
         fputs(text->lines[i].str, filewrite);          //проверки тут?
         fputc('\n', filewrite);
     }
+    printf ("outputed\n");
 }
 
 
@@ -354,7 +285,7 @@ void file_original_output (struct Text *text, FILE *filewrite) {
 
     for (size_t i = 0; i < text -> num_lines; i++) {
 
-        fputs (str, filewrite);                            //проверки тут?
+        fputs (str, filewrite);
         fputc ('\n', filewrite);
         // + 2
         str = strchr (str, '\0') + 1;
@@ -367,60 +298,16 @@ void file_original_output (struct Text *text, FILE *filewrite) {
 }
 
 
-//-----------------------------------------------------------------------------
+//===============================================================================================
 
 
-/*qsort(buffer, n, sizeof(int), comp);
+void text_Dtor(struct Text *text) {
 
-int comp(const void*, const void*);
+    assert (text != nullptr);
 
-my_qsort(struct Text* text, int (*comp) (const void*, const void*))    
-{
-    q_sort(text->buffer, text->nline, sizeof(Line), comp);
+    free(text->lines);
+    free(text->buffer);
+    text->lines = nullptr;
+    text->buffer = nullptr;
 }
-
-
-q_sort(buffer, n, sizeof(line), comp_lr);
- */
-
-/*int Sort1 (char **Index, int num_lines)
-{
-    printf ("Sort1 started.\n\n");
-
-    int counter = 1, i = 0, str_comp_res = 0, strlen = 0;
-
-    while (counter != 0)
-    {
-        counter = 0;
-
-        for (int k = 0; k < num_lines - 1; ++k)
-        {
-            for (i = 0; i < num_lines; ++i)
-            {
-                str_comp_res = strcmp (Index [i], Index [i+1]);
-
-                if (str_comp_res > 0)
-                {
-                    if (JustSwap (Index, i) == 0)
-                    {
-                        counter = 1;
-                    }
-
-                    else return SWAP_ERR;
-                }
-            }
-        }
-    }
-
-    printf ("111111111111111111111111111111111111\n\n");
-
-    for (i = 0; i < num_lines; ++i)
-        puts (Index [i]);
-
-
-    return 0;
-}  */
-
-//-----------------------------------------------------------------------------
-
 

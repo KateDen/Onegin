@@ -13,6 +13,6 @@ The text should be in English.
 
 
 #### Example files in this program:
-< "Hamlet_ex.txt" >
+& "Hamlet_ex.txt" &
 
-Your sorted text will appear in this file: < "Hamlet_sorted.txt" >
+Your sorted text will appear in this file: "Hamlet_sorted.txt"

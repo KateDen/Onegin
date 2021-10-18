@@ -10,11 +10,11 @@ The text should be in English.
 
 `g++ Onegin_main.cpp Onegin_func.cpp -o app`
 
-`./app "File_name.txt"`
+`./app "Input_File_name.txt" "Output_File_name.txt"`
 
 
 #### Example files in this program:
-"Hamlet_ex.txt"
+Input file: "Hamlet_example.txt"
 
 Your sorted text will appear in this file: "Hamlet_sorted.txt"
 

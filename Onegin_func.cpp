@@ -155,23 +155,15 @@ void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comparator)(const
     int left  = 0;
     int right = num_el - 1;
 
-    //struct String *pointer = ptr;
-
     struct Line pilot = *((struct Line *) ((char *) ptr + size_el * (num_el / 2)));
-    //printf ("pilot = \t\t\t%c\n", *(pilot.str));
 
     do
-    {        
-        //printf ("do!\n");
-        
+    {                
         while (comparator ((char *)ptr + size_el * left, &pilot) < 0) {
             ++left;
-            //printf ("here left = %d\n", left);        
         }
-        //printf ("here left = %d\n", left);
         while (comparator ((char *)ptr + size_el * right, &pilot) > 0 && right > 0) {
             --right;
-            //printf ("here right = %d\n", right);        
         }
 
         if (left <= right) {
@@ -203,13 +195,10 @@ int comparator_1 (const void *el_1, const void *el_2) {
     assert (el_1 != nullptr);
     assert (el_2 != nullptr);
 
-    //printf ("I'm in comparator_1\n");
     int i = 0, k = 0;
 
     char *str_1 = ((struct Line *) el_1)->str;
     char *str_2 = ((struct Line *) el_2)->str;
-
-    //printf ("%c\t%c\n", *str_1,*str_2);
     
 
     while (!isalnum (str_1[i]) && str_1[i] != '\0') ++i;   
@@ -217,15 +206,12 @@ int comparator_1 (const void *el_1, const void *el_2) {
     
     while (str_1[i] != '\0' && str_2[k] != '\0' && str_1[i] == str_2[k]) {  
 
-        while (!isalnum (str_1[i]) && str_1[i] != '\0') ++i;   
-        while (!isalnum (str_2[k]) && str_2[k] != '\0') ++k;
-            
         ++i;
         ++k; 
+        
+        while (!isalnum (str_1[i]) && str_1[i] != '\0') ++i;   
+        while (!isalnum (str_2[k]) && str_2[k] != '\0') ++k;
     }
-
-    // printf ("%d\t%d\n", i, k);
-    // return strcmp (str_1, str_2);
 
     return str_1[i] - str_2[k];
 }
@@ -233,6 +219,39 @@ int comparator_1 (const void *el_1, const void *el_2) {
 
 //=================================================================================================
 
+
+int comparator_2 (const void *el_1, const void *el_2) {
+
+    assert (el_1 != nullptr);
+    assert (el_2 != nullptr);
+
+    long i = (((struct Line *) el_1) -> length) - 1;
+    long k = (((struct Line *) el_2) -> length) - 1;
+
+    char *str_1 = ((((struct Line *) el_1) -> str) + (((struct Line *) el_1) -> length));
+    char *str_2 = ((((struct Line *) el_2) -> str) + (((struct Line *) el_2) -> length));
+
+    char *end_1 = ((struct Line *) el_1) -> str;
+    char *end_2 = ((struct Line *) el_2) -> str;
+
+
+    while (!isalnum (str_1[i]) && str_1[i] != *end_1) --i;   
+    while (!isalnum (str_2[k]) && str_2[k] != *end_2) --k;
+    
+    while (str_1[i] == str_2[k] && str_1[i] != *end_1 && str_2[k] != *end_2) {  
+
+        --i;
+        --k; 
+        
+        while (!isalnum (str_1[i]) && str_1[i] != *end_1 && str_1[i] != ' ') --i;   
+        while (!isalnum (str_2[k]) && str_2[k] != *end_2 && str_2[k] != ' ') --k;
+    }
+
+    return str_1[i] - str_2[k];
+}
+
+
+//===============================================================================================
 
 void swapper (void *el_1, void *el_2, size_t size_el) {            //??? ...-> str => жадный алгоритм? мы же меняем структуры
     //printf ("i'm in swapper!\n");
@@ -266,10 +285,9 @@ void file_output (struct Text *text, FILE *filewrite) {
 
     for (size_t i = 0; i < text->num_lines; i++) {
 
-        fputs(text->lines[i].str, filewrite);          //проверки тут?
+        fputs(text->lines[i].str, filewrite);         
         fputc('\n', filewrite);
     }
-    printf ("outputed\n");
 }
 
 

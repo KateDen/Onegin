@@ -156,13 +156,16 @@ void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comparator)(const
     int right = num_el - 1;
 
     struct Line pilot = *((struct Line *) ((char *) ptr + size_el * (num_el / 2)));
+    
+    void *el = (void *) calloc (1, size_el);
+    memcpy(el, ((char *) ptr + size_el * (num_el / 2)), size_el);
 
     do
     {                
-        while (comparator ((char *)ptr + size_el * left, &pilot) < 0) {
+        while (comparator ((char *)ptr + size_el * left, el) < 0) {
             ++left;
         }
-        while (comparator ((char *)ptr + size_el * right, &pilot) > 0 && right > 0) {
+        while (comparator ((char *)ptr + size_el * right, el) > 0) {
             --right;
         }
 
@@ -175,6 +178,8 @@ void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comparator)(const
         
     } while (left <= right);
     
+    free (el);
+    
     if (right > 0) {
         my_qsort (ptr, right + 1, size_el, comparator);
     }
@@ -182,8 +187,6 @@ void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comparator)(const
     if (left < num_el) {
         my_qsort (((char *) ptr + size_el * left), num_el - left, size_el, comparator);
     }
-
-
 }
 
 
@@ -201,19 +204,19 @@ int comparator_1 (const void *el_1, const void *el_2) {
     char *str_2 = ((struct Line *) el_2)->str;
     
 
-    while (!isalnum (str_1[i]) && str_1[i] != '\0') ++i;   
-    while (!isalnum (str_2[k]) && str_2[k] != '\0') ++k;
+    while (!isalnum ((int)(unsigned char)str_1[i]) && str_1[i] != '\0') ++i;   
+    while (!isalnum ((int)(unsigned char)str_2[k]) && str_2[k] != '\0') ++k;
     
     while (str_1[i] != '\0' && str_2[k] != '\0' && str_1[i] == str_2[k]) {  
 
         ++i;
         ++k; 
         
-        while (!isalnum (str_1[i]) && str_1[i] != '\0') ++i;   
-        while (!isalnum (str_2[k]) && str_2[k] != '\0') ++k;
+        while (!isalnum ((int)(unsigned char)str_1[i]) && str_1[i] != '\0') ++i;   
+        while (!isalnum ((int)(unsigned char)str_2[k]) && str_2[k] != '\0') ++k;
     }
 
-    return str_1[i] - str_2[k];
+    return (int)(unsigned char)str_1[i] - (int)(unsigned char)str_2[k];
 }
 
 
@@ -228,51 +231,60 @@ int comparator_2 (const void *el_1, const void *el_2) {
     long i = (((struct Line *) el_1) -> length) - 1;
     long k = (((struct Line *) el_2) -> length) - 1;
 
-    char *str_1 = ((((struct Line *) el_1) -> str) + (((struct Line *) el_1) -> length));
-    char *str_2 = ((((struct Line *) el_2) -> str) + (((struct Line *) el_2) -> length));
+    char *str_1 = ((struct Line *) el_1) -> str;
+    char *str_2 = ((struct Line *) el_2) -> str;
 
-    char *end_1 = ((struct Line *) el_1) -> str;
-    char *end_2 = ((struct Line *) el_2) -> str;
-
-
-    while (!isalnum (str_1[i]) && str_1[i] != *end_1) --i;   
-    while (!isalnum (str_2[k]) && str_2[k] != *end_2) --k;
+    while (!isalnum ((unsigned char)str_1[i]) && i != -1) --i; 
+    while (!isalnum ((unsigned char)str_2[k]) && k != -1) --k;
     
-    while (str_1[i] == str_2[k] && str_1[i] != *end_1 && str_2[k] != *end_2) {  
+    while (str_1[i] == str_2[k] && i != -1 && k != -1) {  
 
         --i;
         --k; 
-        
-        while (!isalnum (str_1[i]) && str_1[i] != *end_1 && str_1[i] != ' ') --i;   
-        while (!isalnum (str_2[k]) && str_2[k] != *end_2 && str_2[k] != ' ') --k;
+    
+        while (!isalnum ((unsigned char)str_1[i]) && i != -1 && str_1[i] != ' ') --i;
+        while (!isalnum ((unsigned char)str_2[k]) && k != -1 && str_2[k] != ' ') --k;
     }
 
-    return str_1[i] - str_2[k];
+    return (unsigned char)str_1[i] - (unsigned char)str_2[k];
 }
 
 
 //===============================================================================================
 
-void swapper (void *el_1, void *el_2, size_t size_el) {            //??? ...-> str => жадный алгоритм? мы же меняем структуры
-    //printf ("i'm in swapper!\n");
+void swapper (void *el_1, void *el_2, size_t size_el) { 
 
-    // char *tmp    = {};
-    // char *swap_1 = ((struct Line *) el_1) -> str;
-    // char *swap_2 = ((struct Line *) el_2) -> str;
-    // printf ("swap: %c\t\t%c\n", *swap_1,*swap_2);
+    int counter = size_el / 8;
+    int k = size_el % 8;
 
+    for (int i = 0; i < counter; ++i) {
+    
+        long long *swap_left  = (long long *) el_1;
+        long long *swap_right = (long long *) el_2;
+        long long  swap_tmp   = 0;
 
-    // tmp = swap_1;
-    //       swap_1 = swap_2;
-    //                swap_2 = tmp;
+    
+        swap_tmp = *swap_left;
+                   *swap_left = *swap_right;
+                                *swap_right = swap_tmp;
 
-    struct Line tmp = {};
-    struct Line *left_sw  = (struct Line *) el_1;
-    struct Line *right_sw = (struct Line *) el_2;
-            
-    tmp = *left_sw;
-          *left_sw = *right_sw;
-                     *right_sw = tmp;
+        el_1 = (char *) el_1 + sizeof(long long);
+        el_2 = (char *) el_2 + sizeof(long long);
+    }
+
+    for (int i = 0; i < k; ++i) {
+
+        char *swap_left  = (char *) el_1;
+        char *swap_right = (char *) el_2;
+        char swap_tmp   = 0;
+
+        swap_tmp = *swap_left;
+                   *swap_left = *swap_right;
+                                *swap_right = swap_tmp;
+        
+        el_1 = (char *) el_1 + sizeof(char);
+        el_2 = (char *) el_2 + sizeof(char);
+    }
 }
 
 //===============================================================================================
@@ -305,7 +317,7 @@ void file_original_output (struct Text *text, FILE *filewrite) {
 
         fputs (str, filewrite);
         fputc ('\n', filewrite);
-        // + 2
+        
         str = strchr (str, '\0') + 1;
 
         if (*str == '\n')
@@ -328,4 +340,3 @@ void text_Dtor(struct Text *text) {
     text->lines = nullptr;
     text->buffer = nullptr;
 }
-

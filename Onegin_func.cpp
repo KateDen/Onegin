@@ -162,10 +162,10 @@ void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comparator)(const
 
     do
     {                
-        while (comparator ((char *)ptr + size_el * left, el) < 0) {
+        while (comparator ((char *)ptr + size_el * left, el) < 0) { //&pilot) < 0) {
             ++left;
         }
-        while (comparator ((char *)ptr + size_el * right, el) > 0) {
+        while (comparator ((char *)ptr + size_el * right, el) > 0) { //&& right > 0) { //&& right >= 0) {//el) > 0) {
             --right;
         }
 
@@ -216,7 +216,7 @@ int comparator_1 (const void *el_1, const void *el_2) {
         while (!isalnum ((int)(unsigned char)str_2[k]) && str_2[k] != '\0') ++k;
     }
 
-    return (int)(unsigned char)str_1[i] - (int)(unsigned char)str_2[k];
+    return (int)(unsigned char)str_1[i] - (int)(unsigned char)str_2[k];     //для русского - приведение к типам (int)(unsighed char) str_1[i]...
 }
 
 
@@ -234,19 +234,19 @@ int comparator_2 (const void *el_1, const void *el_2) {
     char *str_1 = ((struct Line *) el_1) -> str;
     char *str_2 = ((struct Line *) el_2) -> str;
 
-    while (!isalnum ((unsigned char)str_1[i]) && i != -1) --i; 
-    while (!isalnum ((unsigned char)str_2[k]) && k != -1) --k;
+    while (!isalnum ((int)(unsigned char)str_1[i]) && i != -1) --i; 
+    while (!isalnum ((int)(unsigned char)str_2[k]) && k != -1) --k;
     
     while (str_1[i] == str_2[k] && i != -1 && k != -1) {  
 
         --i;
         --k; 
     
-        while (!isalnum ((unsigned char)str_1[i]) && i != -1 && str_1[i] != ' ') --i;
-        while (!isalnum ((unsigned char)str_2[k]) && k != -1 && str_2[k] != ' ') --k;
+        while (!isalnum ((int)(unsigned char)str_1[i]) && i != -1 && str_1[i] != ' ') --i;
+        while (!isalnum ((int)(unsigned char)str_2[k]) && k != -1 && str_2[k] != ' ') --k;
     }
 
-    return (unsigned char)str_1[i] - (unsigned char)str_2[k];
+    return (int)(unsigned char)str_1[i] - (int)(unsigned char)str_2[k];
 }
 
 

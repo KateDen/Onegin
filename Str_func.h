@@ -19,10 +19,6 @@ enum error_consts {
 };
 
 
-//#define PRINT_LINE printf("I'm at line %d in %s\n", __LINE__, __PRETTY_FUNCTION__)
-//#define PRINT_PTR(ptr) printf("I'm %s at %p\n", #ptr, ptr)
-
-
 struct Text
 {
     char *buffer = nullptr;

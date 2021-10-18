@@ -2,13 +2,21 @@
 
 int error = 0;
 
+// русский (желательно, но не обязательно)
 
+int main (int argc, const char *argv[]) {
 
-int main () {
+    const char *inputf  = "Hamlet_example.txt";
+    const char *outputf = "Hamlet_sort.txt";
+
+    if (argc == 3) {
+        inputf  = argv[1];
+        outputf = argv[2];
+    }
 
     struct Text text  = {};
     
-    FILE *fileread = fopen ("Hamlet_example.txt", "rb");
+    FILE *fileread = fopen (inputf, "rb");
 
     if (!fileread) {
         printf ("%p \t fread err here\n", fileread);
@@ -21,11 +29,9 @@ int main () {
         return error_prints (FCLOSE_ERR);
     }
 
-    //printf ("everything is good then qsort\n");
-
     my_qsort (text.lines, text.num_lines, sizeof (struct Line), comparator_1);
     
-    FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
+    FILE *filewrite = fopen (outputf, "wb");
 
     if (!filewrite) {
         return error_prints (FOPEN_ERR);

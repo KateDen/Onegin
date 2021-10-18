@@ -6,6 +6,8 @@ int error = 0;
 
 int main (int argc, const char *argv[]) {
 
+    setlocale (LC_ALL, "ru_RU.cp1251");
+
     const char *inputf  = "Hamlet_example.txt";
     const char *outputf = "Hamlet_sort.txt";
 

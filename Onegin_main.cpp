@@ -21,12 +21,10 @@ int main () {
         return error_prints (FCLOSE_ERR);
     }
 
-    printf ("everything is good then qsort\n");
+    //printf ("everything is good then qsort\n");
 
     my_qsort (text.lines, text.num_lines, sizeof (struct Line), comparator_1);
-
-    //my_qsort (text.lines, text.num_lines, sizeof (struct Line), strcmp);
-
+    
     FILE *filewrite = fopen ("Hamlet_sort.txt", "wb");
 
     if (!filewrite) {
@@ -35,7 +33,15 @@ int main () {
 
     file_output (&text, filewrite);
 
-    // file_original_output (&text, filewrite);
+    fputs ("\n\n!!!!!!!********PTPTPTPTPPTPTPTPTPTPTPTPTPTPTPPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPPTPTPTPTPTPTPTPTPT********!!!!!!!\n\n", filewrite);
+
+    my_qsort (text.lines, text.num_lines, sizeof (struct Line), comparator_2);
+
+    file_output (&text, filewrite);
+
+    fputs ("\n\n!!!!!!!********PTPTPTPTPPTPTPTPTPTPTPTPTPTPTPPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPTPPPTPTPTPTPTPTPPTPT********!!!!!!!\n\n", filewrite);
+
+    file_original_output (&text, filewrite);
 
     text_Dtor (&text);
 

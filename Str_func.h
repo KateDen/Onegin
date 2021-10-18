@@ -49,9 +49,10 @@ char* create_buffer (struct Text *text, FILE *fileread);
 size_t str_counter (struct Text *text);
 void init_strings (struct Text *text);
 
-int comparator_1 (const void *el_1, const void *el_2);                                  // add sorts?comparator? is_alnum...........
+int comparator_1 (const void *el_1, const void *el_2); 
+int comparator_2 (const void *el_1, const void *el_2);                               
 void my_qsort (void *ptr, size_t num_el, size_t size_el, int (*comparator)(const void*, const void*));
-void swapper (void *el_1, void *el_2, size_t size_el);           // const void*                                               //+ swapper (void *, void *);
+void swapper (void *el_1, void *el_2, size_t size_el);                                               
 
 int Sort1 (struct Text *text, int numlines);
 int just_swap (struct Text *text, int i);
